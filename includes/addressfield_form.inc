@@ -1,0 +1,14 @@
+<?php
+// $Id$
+
+/**
+ * Interface for an address field form.
+ */
+interface AddressFieldForm {
+
+  /**
+   * Return the edit form for a given address.
+   */
+  public function form($address);
+
+}

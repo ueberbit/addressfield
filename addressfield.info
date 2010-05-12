@@ -1,0 +1,8 @@
+name = Address Field
+description = Manage a flexible address field, implementing the xNAL standard.
+core = 7.x
+
+files[] = addressfield.module
+files[] = includes/addressfield_form.inc
+files[] = includes/addressfield_form_default.inc
+files[] = includes/addressfield_form_us.inc
