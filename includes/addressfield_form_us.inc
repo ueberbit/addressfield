@@ -24,13 +24,6 @@ class AddressFieldForm_us implements AddressFieldForm {
       '#required' => true,
       '#default_value' => $address['locality'],
     );
-    $form['postal_code'] = array(
-      '#title' => t('ZIP Code'),
-      '#type' => 'textfield',
-      '#size' => 5,
-      '#required' => true,
-      '#default_value' => $address['postal_code'],
-    );
     $form['administrative_area'] = array(
       '#title' => t('State'),
       '#type' => 'select',
@@ -99,6 +92,13 @@ class AddressFieldForm_us implements AddressFieldForm {
         'PR' => t('Puerto Rico'),
         'VI' => t('Virgin Islands'),
       ),
+    );
+    $form['postal_code'] = array(
+      '#title' => t('ZIP Code'),
+      '#type' => 'textfield',
+      '#size' => 10,
+      '#required' => true,
+      '#default_value' => $address['postal_code'],
     );
     return $form;
   }
