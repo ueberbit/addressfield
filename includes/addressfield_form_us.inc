@@ -5,11 +5,13 @@
  * Address handler for the US.
  */
 class AddressFieldForm_us implements AddressFieldForm {
-  public function form($address) {
+  public function form($address, $field, $instance, $langcode, $items, $delta, $element) {
+    $required = $delta == 0 && $instance['required'];
+
     $form['thoroughfare'] = array(
       '#title' => t('Street'),
       '#type' => 'textfield',
-      '#required' => true,
+      '#required' => $required,
       '#default_value' => $address['thoroughfare'],
     );
     $form['premise'] = array(
@@ -21,14 +23,14 @@ class AddressFieldForm_us implements AddressFieldForm {
       '#title' => t('City'),
       '#type' => 'textfield',
       '#size' => 30,
-      '#required' => true,
+      '#required' => $required,
       '#default_value' => $address['locality'],
     );
     $form['administrative_area'] = array(
       '#title' => t('State'),
       '#type' => 'select',
       '#default_value' => $address['administrative_area'],
-      '#required' => TRUE,
+      '#required' => $required,
       '#options' => array(
         ''   => t('--'),
         'AL' => t('Alabama'),
@@ -97,7 +99,7 @@ class AddressFieldForm_us implements AddressFieldForm {
       '#title' => t('ZIP Code'),
       '#type' => 'textfield',
       '#size' => 10,
-      '#required' => true,
+      '#required' => $required,
       '#default_value' => $address['postal_code'],
     );
     return $form;

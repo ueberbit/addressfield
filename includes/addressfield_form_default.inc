@@ -5,11 +5,13 @@
  * Default address handler.
  */
 class AddressFieldForm_default implements AddressFieldForm {
-  public function form($address) {
+  public function form($address, $field, $instance, $langcode, $items, $delta, $element) {
+    $required = $delta == 0 && $instance['required'];
+
     $form['thoroughfare'] = array(
       '#title' => t('Street'),
       '#type' => 'textfield',
-      '#required' => true,
+      '#required' => $required,
       '#default_value' => $address['thoroughfare'],
     );
     $form['premise'] = array(
@@ -31,14 +33,14 @@ class AddressFieldForm_default implements AddressFieldForm {
       '#title' => t('Postal Code'),
       '#type' => 'textfield',
       '#size' => 5,
-      '#required' => true,
+      '#required' => $required,
       '#default_value' => $address['postal_code'],
     );
     $form['locality'] = array(
       '#title' => t('City'),
       '#type' => 'textfield',
       '#size' => 30,
-      '#required' => true,
+      '#required' => $required,
       '#default_value' => $address['locality'],
     );
 

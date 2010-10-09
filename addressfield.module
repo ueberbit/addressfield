@@ -119,7 +119,7 @@ function addressfield_field_widget_info() {
   $widgets = array();
 
   $widgets['addressfield_standard'] = array(
-    'label' => t('Address widgets'),
+    'label' => t('Dynamic address form'),
     'field types' => array('addressfield'),
     'settings' => array(
       'available_countries' => array(),
@@ -224,7 +224,7 @@ function addressfield_field_widget_form(&$form, &$form_state, $field, $instance,
       '#limit_validation_errors' => array(),
     );
 
-    $element += addressfield_edit_form($address['country'], $address);
+    $element += addressfield_edit_form($address, $field, $instance, $langcode, $items, $delta, $element);
   }
 
   return $element;
@@ -243,10 +243,10 @@ function addressfield_standard_widget_validate($element, &$form_state) {
   // Search through the form values to find the current address.
   $address = $form_state['values'];
 
-  $array_parents = $element['#array_parents'];
-  array_pop($array_parents);
+  $parents = $element['#parents'];
+  array_pop($parents);
 
-  foreach ($array_parents as $key) {
+  foreach ($parents as $key) {
     $address = $address[$key];
   }
 
@@ -285,11 +285,11 @@ function addressfield_standard_widget_refresh($form, $form_state) {
  * @return
  *   A form snippet.
  */
-function addressfield_edit_form($country, array $address) {
+function addressfield_edit_form(array $address, $field, $instance, $langcode, $items, $delta, $element) {
   $form_controller = addressfield_get_form_controller($address);
 
   // Build the form from the controller.
-  $form = $form_controller->form($address);
+  $form = $form_controller->form($address, $field, $instance, $langcode, $items, $delta, $element);
 
   return $form;
 }
@@ -298,8 +298,10 @@ function addressfield_edit_form($country, array $address) {
  * Implementation of hook_field_widget_settings_form()
  */
 function addressfield_field_widget_settings_form($field, $instance) {
-  // Necessary for country_get_list().
-  include_once DRUPAL_ROOT . '/includes/locale.inc';
+  // Necessary for country_get_list(); not using include_once for performance.
+  if (!function_exists('country_get_list')) {
+    include DRUPAL_ROOT . '/includes/locale.inc';
+  }
 
   $widget = $instance['widget'];
   $settings = $widget['settings'];
@@ -307,10 +309,11 @@ function addressfield_field_widget_settings_form($field, $instance) {
   if ($widget['type'] == 'addressfield_standard') {
     $form['default_country'] = array(
       '#type' => 'select',
-      '#title' => t('Default contry'),
+      '#title' => t('Default country'),
       '#options' => country_get_list(),
       '#default_value' => $settings['default_country'],
     );
+
     $form['available_countries'] = array(
       '#type' => 'select',
       '#multiple' => TRUE,
@@ -320,6 +323,7 @@ function addressfield_field_widget_settings_form($field, $instance) {
       '#default_value' => $settings['available_countries'],
     );
   }
+
   return $form;
 }
 
