@@ -7,7 +7,7 @@
  */
 
 /**
- * Implementation of hook_field_info()
+ * Implements of hook_field_info()
  */
 function addressfield_field_info() {
   $fields = array();
@@ -23,7 +23,7 @@ function addressfield_field_info() {
 }
 
 /**
- * Implementation of hook_field_schema()
+ * Implements of hook_field_schema()
  */
 function addressfield_field_schema() {
   $columns = array(
@@ -106,14 +106,14 @@ function addressfield_field_schema() {
 }
 
 /**
- * Implementation of hook_field_is_empty().
+ * Implements of hook_field_is_empty().
  */
 function addressfield_field_is_empty($item, $field) {
   return empty($item['country']);
 }
 
 /**
- * Implementation of hook_field_widget_info()
+ * Implements of hook_field_widget_info()
  */
 function addressfield_field_widget_info() {
   $widgets = array();
@@ -131,7 +131,7 @@ function addressfield_field_widget_info() {
 }
 
 /**
- * Build a dummy address array.
+ * Builds a dummy address array.
  */
 function addressfield_default_values($settings) {
   return array(
@@ -149,7 +149,7 @@ function addressfield_default_values($settings) {
 }
 
 /**
- * Implementation of hook_field_widget_form()
+ * Implements of hook_field_widget_form()
  */
 function addressfield_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
   $settings = $instance['widget']['settings'];
@@ -276,7 +276,7 @@ function addressfield_standard_widget_refresh($form, $form_state) {
 }
 
 /**
- * Return a form snippet for editing an address in a given country.
+ * Returns a form snippet for editing an address in a given country.
  *
  * @param $country
  *   The country of the address.
@@ -295,7 +295,7 @@ function addressfield_edit_form(array $address, $field, $instance, $langcode, $i
 }
 
 /**
- * Implementation of hook_field_widget_settings_form()
+ * Implements of hook_field_widget_settings_form()
  */
 function addressfield_field_widget_settings_form($field, $instance) {
   // Necessary for country_get_list(); not using include_once for performance.
@@ -328,7 +328,7 @@ function addressfield_field_widget_settings_form($field, $instance) {
 }
 
 /**
- * Get the controller for a specific action on an address.
+ * Gets the controller for a specific action on an address.
  *
  * @param $address
  *   The address array.
@@ -370,7 +370,7 @@ function addressfield_default_mapping() {
 }
 
 /**
- * Implementation of hook_field_formatter_info().
+ * Implements of hook_field_formatter_info().
  */
 function addressfield_field_formatter_info() {
   return array(
