@@ -132,7 +132,7 @@ function addressfield_field_widget_info() {
 /**
  * Builds a dummy address array.
  */
-function addressfield_default_values($settings) {
+function addressfield_default_values() {
   return array(
     'country' => variable_get('site_default_country', NULL),
     'administrative_area' => '',
@@ -185,11 +185,11 @@ function addressfield_field_widget_form(&$form, &$form_state, $field, $instance,
   }
   else {
     // Otherwise use the instance default.
-    $address = $instance['default_value'][0];
+    $address = (array) $instance['default_value'][0];
   }
 
   // Merge in default values to provide a value for every expected array key.
-  $address += addressfield_default_values($settings);
+  $address += addressfield_default_values();
 
   // Add the form elements for the standard widget, which includes a country
   // select list at the top that reloads the available address elements when the
