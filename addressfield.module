@@ -360,6 +360,7 @@ function addressfield_get_form_controller(array $address) {
 function addressfield_default_mapping() {
   return array(
     'default' => 'AddressFieldForm_default',
+    'BR' => 'AddressFieldForm_br',
     'US' => 'AddressFieldForm_us',
     // TODO: complete the mapping.
   );
