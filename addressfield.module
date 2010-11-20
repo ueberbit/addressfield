@@ -6,8 +6,26 @@
  * Defines a field for attaching country-specific addresses to entities.
  */
 
+
 /**
- * Implements of hook_field_info()
+ * Implements hook_theme().
+ */
+function addressfield_theme() {
+  $path = drupal_get_path('module', 'addressfield') . '/theme';
+
+  $templates['addressfield_formatter'] = array(
+    'variables' => array('address' => NULL),
+    'template' => 'addressfield-formatter',
+    'path' => $path,
+  );
+
+  $templates += drupal_find_theme_templates($templates, '.tpl.php', $path);
+
+  return $templates;
+}
+
+/**
+ * Implements hook_field_info()
  */
 function addressfield_field_info() {
   $fields = array();
@@ -23,7 +41,7 @@ function addressfield_field_info() {
 }
 
 /**
- * Implements of hook_field_schema()
+ * Implements hook_field_schema()
  */
 function addressfield_field_schema() {
   $columns = array(
@@ -34,8 +52,39 @@ function addressfield_field_schema() {
       'not null' => FALSE,
       'default' => '',
     ),
+    'xnl' => array(
+      'description' => "XML contents of the xNL element.",
+      'type' => 'text',
+      'size' => 'big',
+    ),
+    'first_name' => array(
+      'description' => 'Contents of the FirstName element of the primary PersonName element in the xNL XML.',
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => TRUE,
+      'default' => '',
+    ),
+    'last_name' => array(
+      'description' => 'Contents of the LastName element of the primary PersonName element in the xNL XML.',
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => TRUE,
+      'default' => '',
+    ),
+    'organisation_name' => array(
+      'description' => 'Contents of the OrganisationName element of the primary PersonName element in the xNL XML.',
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => TRUE,
+      'default' => '',
+    ),
+    'xal' => array(
+      'description' => "XML contents of the address's xAL element.",
+      'type' => 'text',
+      'size' => 'big',
+    ),
     'administrative_area' => array(
-      'description' => 'The dministrative area of this address.',
+      'description' => 'The administrative area of this address.',
       'type' => 'varchar',
       'length' => 255,
       'default' => '',
@@ -106,14 +155,14 @@ function addressfield_field_schema() {
 }
 
 /**
- * Implements of hook_field_is_empty().
+ * Implements hook_field_is_empty().
  */
 function addressfield_field_is_empty($item, $field) {
   return empty($item['country']);
 }
 
 /**
- * Implements of hook_field_widget_info()
+ * Implements hook_field_widget_info()
  */
 function addressfield_field_widget_info() {
   $widgets = array();
@@ -135,6 +184,11 @@ function addressfield_field_widget_info() {
 function addressfield_default_values() {
   return array(
     'country' => variable_get('site_default_country', NULL),
+    'xnl' => '',
+    'first_name' => '',
+    'last_name' => '',
+    'organisation_name' => '',
+    'xal' => '',
     'administrative_area' => '',
     'sub_administrative_area' => '',
     'locality' => '',
@@ -148,7 +202,7 @@ function addressfield_default_values() {
 }
 
 /**
- * Implements of hook_field_widget_form()
+ * Implements hook_field_widget_form()
  */
 function addressfield_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
   $settings = $instance['widget']['settings'];
@@ -298,7 +352,7 @@ function addressfield_edit_form(array $address, $field, $instance, $langcode, $i
 }
 
 /**
- * Implements of hook_field_widget_settings_form()
+ * Implements hook_field_widget_settings_form()
  */
 function addressfield_field_widget_settings_form($field, $instance) {
   // Necessary for country_get_list(); not using include_once for performance.
@@ -367,7 +421,7 @@ function addressfield_default_mapping() {
 }
 
 /**
- * Implements of hook_field_formatter_info().
+ * Implements hook_field_formatter_info().
  */
 function addressfield_field_formatter_info() {
   return array(
@@ -396,18 +450,4 @@ function addressfield_field_formatter_view($entity_type, $entity, $field, $insta
   }
 
   return $element;
-}
-
-/**
- * Implements hook_theme().
- */
-function addressfield_theme() {
-  $path = drupal_get_path('module', 'addressfield') . '/theme';
-  $templates['addressfield_formatter'] = array(
-    'variables' => array('address' => NULL),
-    'template' => 'addressfield-formatter',
-    'path' => $path,
-  );
-  $templates += drupal_find_theme_templates($templates, '.tpl.php', $path);
-  return $templates;
 }
