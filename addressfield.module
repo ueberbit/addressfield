@@ -56,32 +56,41 @@ function addressfield_field_schema() {
       'description' => "XML contents of the xNL element.",
       'type' => 'text',
       'size' => 'big',
+      'not null' => FALSE,
     ),
-    'first_name' => array(
-      'description' => 'Contents of the FirstName element of the primary PersonName element in the xNL XML.',
+    'name_line' => array(
+      'description' => 'Contents of a primary NameLine element in the xNL XML.',
       'type' => 'varchar',
       'length' => 255,
-      'not null' => TRUE,
+      'not null' => FALSE,
+      'default' => '',
+    ),
+    'first_name' => array(
+      'description' => 'Contents of the FirstName element of a primary PersonName element in the xNL XML.',
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => FALSE,
       'default' => '',
     ),
     'last_name' => array(
-      'description' => 'Contents of the LastName element of the primary PersonName element in the xNL XML.',
+      'description' => 'Contents of the LastName element of a primary PersonName element in the xNL XML.',
       'type' => 'varchar',
       'length' => 255,
-      'not null' => TRUE,
+      'not null' => FALSE,
       'default' => '',
     ),
     'organisation_name' => array(
-      'description' => 'Contents of the OrganisationName element of the primary PersonName element in the xNL XML.',
+      'description' => 'Contents of a primary OrganisationName element in the xNL XML.',
       'type' => 'varchar',
       'length' => 255,
-      'not null' => TRUE,
+      'not null' => FALSE,
       'default' => '',
     ),
     'xal' => array(
       'description' => "XML contents of the address's xAL element.",
       'type' => 'text',
       'size' => 'big',
+      'not null' => FALSE,
     ),
     'administrative_area' => array(
       'description' => 'The administrative area of this address.',
@@ -155,36 +164,13 @@ function addressfield_field_schema() {
 }
 
 /**
- * Implements hook_field_is_empty().
- */
-function addressfield_field_is_empty($item, $field) {
-  return empty($item['country']);
-}
-
-/**
- * Implements hook_field_widget_info()
- */
-function addressfield_field_widget_info() {
-  $widgets = array();
-
-  $widgets['addressfield_standard'] = array(
-    'label' => t('Dynamic address form'),
-    'field types' => array('addressfield'),
-    'settings' => array(
-      'available_countries' => array(),
-    ),
-  );
-
-  return $widgets;
-}
-
-/**
- * Builds a dummy address array.
+ * Returns an array of default values for the addressfield form elements.
  */
 function addressfield_default_values() {
   return array(
     'country' => variable_get('site_default_country', NULL),
     'xnl' => '',
+    'name_line' => '',
     'first_name' => '',
     'last_name' => '',
     'organisation_name' => '',
@@ -199,6 +185,73 @@ function addressfield_default_values() {
     'sub_premise' => '',
     'data' => array(),
   );
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function addressfield_field_is_empty($item, $field) {
+  // Every address field must have at least a country value or it is considered
+  // empty, even if it has name information.
+  return empty($item['country']);
+}
+
+/**
+ * Implements hook_field_widget_info()
+ */
+function addressfield_field_widget_info() {
+  $widgets = array();
+
+  $widgets['addressfield_standard'] = array(
+    'label' => t('Dynamic address form'),
+    'field types' => array('addressfield'),
+    'settings' => array(
+      'available_countries' => array(),
+      'name_format' => 'name_line',
+    ),
+  );
+
+  return $widgets;
+}
+
+/**
+ * Implements hook_field_widget_settings_form()
+ */
+function addressfield_field_widget_settings_form($field, $instance) {
+  // Necessary for country_get_list(); not using include_once for performance.
+  if (!function_exists('country_get_list')) {
+    include DRUPAL_ROOT . '/includes/locale.inc';
+  }
+
+  $widget = $instance['widget'];
+  $defaults = field_info_widget_settings($widget['type']);
+  $settings = array_merge($defaults, $widget['settings']);
+
+  if ($widget['type'] == 'addressfield_standard') {
+    $form['available_countries'] = array(
+      '#type' => 'select',
+      '#multiple' => TRUE,
+      '#title' => t('Available countries'),
+      '#description' => t('If no countries are selected, all countries will be available.'),
+      '#options' => country_get_list(),
+      '#default_value' => $settings['available_countries'],
+    );
+
+    $form['name_format'] = array(
+      '#type' => 'radios',
+      '#title' => t('Default to the following name entry format'),
+      '#description' => t('The default selected here may be overridden on a per-country basis if a country has special name entry requirements.'),
+      '#options' => array(
+        'name_line' => t('Full name text field'),
+        'name_line_organisation' => t('Full name text field with an organization field'),
+        'first_last' => t('First and last name text fields'),
+        'first_last_organisation' => t('First and last name textfields with an organization field'),
+      ),
+      '#default_value' => $settings['name_format'],
+    );
+  }
+
+  return $form;
 }
 
 /**
@@ -281,6 +334,20 @@ function addressfield_field_widget_form(&$form, &$form_state, $field, $instance,
       '#limit_validation_errors' => array(),
     );
 
+    // Add a value element for the full xNL XML data.
+    $element['xnl'] = array(
+      '#type' => 'value',
+      '#value' => $address['xnl'],
+    );
+
+    $element += addressfield_standard_xnl_form($address, $field, $instance, $langcode, $items, $delta, $element);
+
+    // Add a value element for the full xAL XML data.
+    $element['xal'] = array(
+      '#type' => 'value',
+      '#value' => $address['xal'],
+    );
+
     $element += addressfield_edit_form($address, $field, $instance, $langcode, $items, $delta, $element);
   }
 
@@ -333,6 +400,51 @@ function addressfield_standard_widget_refresh($form, $form_state) {
 }
 
 /**
+ * Returns an array of form elements used to collect name information based on
+ *   the widget settings for the instance.
+ */
+function addressfield_standard_xnl_form($address, $field, $instance, $langcode, $items, $delta, $element) {
+  $form = array();
+
+  // Provide default fields based on the widget settings.
+  $format = $instance['widget']['settings']['name_format'];
+  $required = $delta == 0 && $instance['required'];
+
+  if (strpos($format, 'name_line') === 0) {
+    $form['name_line'] = array(
+      '#title' => t('Full name'),
+      '#type' => 'textfield',
+      '#required' => $required,
+      '#default_value' => $address['name_line'],
+    );
+  }
+  elseif (strpos($format, 'first_last') === 0) {
+    $form['first_name'] = array(
+      '#title' => t('First name'),
+      '#type' => 'textfield',
+      '#required' => $required,
+      '#default_value' => $address['first_name'],
+    );
+    $form['last_name'] = array(
+      '#title' => t('Last name'),
+      '#type' => 'textfield',
+      '#required' => $required,
+      '#default_value' => $address['last_name'],
+    );
+  }
+
+  if (strpos($format, 'organisation')) {
+    $form['organisation_name'] = array(
+      '#title' => t('Organization'),
+      '#type' => 'textfield',
+      '#default_value' => $address['organisation_name'],
+    );
+  }
+
+  return $form;
+}
+
+/**
  * Returns a form snippet for editing an address in a given country.
  *
  * @param $country
@@ -352,36 +464,11 @@ function addressfield_edit_form(array $address, $field, $instance, $langcode, $i
 }
 
 /**
- * Implements hook_field_widget_settings_form()
- */
-function addressfield_field_widget_settings_form($field, $instance) {
-  // Necessary for country_get_list(); not using include_once for performance.
-  if (!function_exists('country_get_list')) {
-    include DRUPAL_ROOT . '/includes/locale.inc';
-  }
-
-  $widget = $instance['widget'];
-  $settings = $widget['settings'];
-
-  if ($widget['type'] == 'addressfield_standard') {
-    $form['available_countries'] = array(
-      '#type' => 'select',
-      '#multiple' => TRUE,
-      '#title' => t('Available countries'),
-      '#description' => t('If no countries are selected, all countries will be available.'),
-      '#options' => country_get_list(),
-      '#default_value' => $settings['available_countries'],
-    );
-  }
-
-  return $form;
-}
-
-/**
- * Gets the controller for a specific action on an address.
+ * Returns the controller for a specific action on an address if it exists.
  *
  * @param $address
  *   The address array.
+ *
  * @return
  *    A controller object.
  */
