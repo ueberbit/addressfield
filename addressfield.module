@@ -243,9 +243,9 @@ function addressfield_field_widget_settings_form($field, $instance) {
       '#description' => t('The default selected here may be overridden on a per-country basis if a country has special name entry requirements.'),
       '#options' => array(
         'name_line' => t('Full name text field'),
-        'name_line_organisation' => t('Full name text field with an organization field'),
         'first_last' => t('First and last name text fields'),
-        'first_last_organisation' => t('First and last name textfields with an organization field'),
+        'name_line_organisation' => t('Full name text field with an optional company text field'),
+        'first_last_organisation' => t('First and last name textfields with an optional company text field'),
       ),
       '#default_value' => $settings['name_format'],
     );
@@ -437,7 +437,7 @@ function addressfield_standard_xnl_form($address, $field, $instance, $langcode, 
 
   if (strpos($format, 'organisation')) {
     $form['organisation_name'] = array(
-      '#title' => t('Organization'),
+      '#title' => t('Company'),
       '#type' => 'textfield',
       '#default_value' => $address['organisation_name'],
     );
