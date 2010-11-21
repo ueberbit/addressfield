@@ -322,7 +322,7 @@ function addressfield_field_widget_form(&$form, &$form_state, $field, $instance,
       '#options' => $options,
       '#default_value' => $address['country'],
       '#required' => TRUE,
-      '#element_validate' => array('addressfield_standard_widget_validate'),
+      '#element_validate' => array('addressfield_standard_country_validate'),
 
       '#ajax' => array(
         'callback' => 'addressfield_standard_widget_refresh',
@@ -334,12 +334,7 @@ function addressfield_field_widget_form(&$form, &$form_state, $field, $instance,
       '#limit_validation_errors' => array(),
     );
 
-    // Add a value element for the full xNL XML data.
-    $element['xnl'] = array(
-      '#type' => 'value',
-      '#value' => $address['xnl'],
-    );
-
+    // Add the name related form elements.
     $element += addressfield_standard_xnl_form($address, $field, $instance, $langcode, $items, $delta, $element);
 
     // Add a value element for the full xAL XML data.
@@ -358,7 +353,7 @@ function addressfield_field_widget_form(&$form, &$form_state, $field, $instance,
  * Element validate callback: rebuilds the form on country change and stores the
  *   current address value in the $form_state for retrieval on rebuild.
  */
-function addressfield_standard_widget_validate($element, &$form_state) {
+function addressfield_standard_country_validate($element, &$form_state) {
   // If the country was changed, rebuild the form.
   if ($element['#default_value'] != $element['#value']) {
     $form_state['rebuild'] = TRUE;
@@ -406,6 +401,13 @@ function addressfield_standard_widget_refresh($form, $form_state) {
 function addressfield_standard_xnl_form($address, $field, $instance, $langcode, $items, $delta, $element) {
   $form = array();
 
+  // Add a value element for the full xNL XML data.
+  $form['xnl'] = array(
+    '#type' => 'value',
+    '#value' => $address['xnl'],
+    '#element_validate' => array('addressfield_standard_xnl_validate')
+  );
+
   // Provide default fields based on the widget settings.
   $format = $instance['widget']['settings']['name_format'];
   $required = $delta == 0 && $instance['required'];
@@ -442,6 +444,60 @@ function addressfield_standard_xnl_form($address, $field, $instance, $langcode, 
   }
 
   return $form;
+}
+
+/**
+ * Element validate callback: sets the value of the xNL element based on the
+ *   name form elements.
+ */
+function addressfield_standard_xnl_validate($element, &$form_state) {
+  // Find the xNL element's sibling element values to construct the XML.
+  $values = $form_state['values'];
+
+  foreach (array_diff($element['#parents'], array('xnl')) as $key) {
+    $values = $values[$key];
+  }
+
+  // Create the basic NameDetails element that holds the name data.
+  $name_details = new SimpleXMLElement('<NameDetails></NameDetails>');
+
+  // If the name line is set, add that first.
+  if (!empty($values['name_line'])) {
+    $name_details->addAttribute('PartyType', 'Person');
+    $name_details->addChild('NameLine', $values['name_line']);
+  }
+  elseif (!empty($values['first_name']) || !empty($values['last_name'])) {
+    // Otherwise add the first and last name elements.
+    $name_details->addAttribute('PartyType', 'Person');
+    $person = $name_details->addChild('PersonName');
+
+    if (!empty($values['first_name'])) {
+      $person->addChild('FirstName', $values['first_name']);
+    }
+    if (!empty($values['last_name'])) {
+      $person->addChild('LastName', $values['last_name']);
+    }
+  }
+
+  // If the organisation name is set, add it in a DependencyName element.
+  if (!empty($values['organisation_name'])) {
+    // If a name has been set, make the organisation a dependency.
+    if (count($name_details)) {
+      $dependency = $name_details->addChild('DependencyName');
+      $dependency->addAttribute('PartyType', 'Organisation');
+      $dependency->addChild('NameLine', $values['organisation_name']);
+    }
+    else {
+      // Otherwise make the NameDetails element an Organisation and add a name.
+      $name_details->addAttribute('PartyType', 'Organisation');
+      $name_details->addChild('NameLine', $values['organisation_name']);
+    }
+  }
+
+  // Extract the NameDetails element from the XML.
+  $xml = substr($name_details->asXML(), strpos($name_details->asXML(), '<NameDetails'));
+
+  form_set_value($element, $xml, $form_state);
 }
 
 /**
