@@ -336,6 +336,14 @@ function addressfield_field_widget_form(&$form, &$form_state, $field, $instance,
       '#limit_validation_errors' => array(),
     );
 
+    if ($delta > 0) {
+      // On subsequent elements of a field, we make the country field non
+      // required and add a ' - None - ' option to it, so as to allow the
+      // user to remove the address by clearing the country field.
+      $element['country']['#required'] = false;
+      $element['country']['#empty_value'] = '';
+    }
+
     // Add the name related form elements.
     $element += addressfield_standard_xnl_form($address, $field, $instance, $langcode, $items, $delta, $element);
 
