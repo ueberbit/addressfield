@@ -11,6 +11,7 @@ class AddressFieldForm_br implements AddressFieldForm {
     $form['thoroughfare'] = array(
       '#title' => t('Address'),
       '#type' => 'textfield',
+      '#size' => 30,
       '#required' => $required,
       '#default_value' => $address['thoroughfare'],
     );
@@ -24,11 +25,13 @@ class AddressFieldForm_br implements AddressFieldForm {
     $form['sub_premise'] = array(
       '#title' => t('Complement'),
       '#type' => 'textfield',
+      '#size' => 30,
       '#default_value' => $address['sub_premise'],
     );
     $form['dependent_locality'] = array(
       '#title' => t('Neighborhood'),
       '#type' => 'textfield',
+      '#size' => 30,
       '#required' => $required,
       '#default_value' => $address['dependent_locality'],
     );

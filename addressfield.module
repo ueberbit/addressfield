@@ -33,6 +33,8 @@ function addressfield_field_info() {
   $fields['addressfield'] = array(
     'label' => t('Postal address'),
     'description' => t('A field type used for storing postal addresses according the xNAL standard.'),
+    'settings' => array(),
+    'instance_settings' => array(),
     'default_widget' => 'addressfield_standard',
     'default_formatter' => 'addressfield_default',
   );
@@ -416,6 +418,7 @@ function addressfield_standard_xnl_form($address, $field, $instance, $langcode, 
     $form['name_line'] = array(
       '#title' => t('Full name'),
       '#type' => 'textfield',
+      '#size' => 30,
       '#required' => $required,
       '#default_value' => $address['name_line'],
     );
@@ -424,12 +427,14 @@ function addressfield_standard_xnl_form($address, $field, $instance, $langcode, 
     $form['first_name'] = array(
       '#title' => t('First name'),
       '#type' => 'textfield',
+      '#size' => 30,
       '#required' => $required,
       '#default_value' => $address['first_name'],
     );
     $form['last_name'] = array(
       '#title' => t('Last name'),
       '#type' => 'textfield',
+      '#size' => 30,
       '#required' => $required,
       '#default_value' => $address['last_name'],
     );
@@ -439,6 +444,7 @@ function addressfield_standard_xnl_form($address, $field, $instance, $langcode, 
     $form['organisation_name'] = array(
       '#title' => t('Company'),
       '#type' => 'textfield',
+      '#size' => 30,
       '#default_value' => $address['organisation_name'],
     );
   }

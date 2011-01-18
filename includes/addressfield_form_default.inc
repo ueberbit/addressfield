@@ -12,27 +12,31 @@ class AddressFieldForm_default implements AddressFieldForm {
       '#title' => t('Street'),
       '#type' => 'textfield',
       '#required' => $required,
+      '#size' => 30,
       '#default_value' => $address['thoroughfare'],
     );
     $form['premise'] = array(
       '#title' => t('Residence, building, ...'),
       '#type' => 'textfield',
+      '#size' => 30,
       '#default_value' => $address['premise'],
     );
     $form['sub_premise'] = array(
       '#title' => t('Floor, stairway, ...'),
       '#type' => 'textfield',
+      '#size' => 30,
       '#default_value' => $address['sub_premise'],
     );
     $form['dependent_locality'] = array(
       '#title' => t('Suburb, post box, ...'),
       '#type' => 'textfield',
+      '#size' => 30,
       '#default_value' => $address['dependent_locality'],
     );
     $form['postal_code'] = array(
       '#title' => t('Postal Code'),
       '#type' => 'textfield',
-      '#size' => 5,
+      '#size' => 10,
       '#required' => $required,
       '#default_value' => $address['postal_code'],
     );

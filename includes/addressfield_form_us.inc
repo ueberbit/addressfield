@@ -11,12 +11,14 @@ class AddressFieldForm_us implements AddressFieldForm {
     $form['thoroughfare'] = array(
       '#title' => t('Street'),
       '#type' => 'textfield',
+      '#size' => 30,
       '#required' => $required,
       '#default_value' => $address['thoroughfare'],
     );
     $form['premise'] = array(
       '#title' => t('Premise'),
       '#type' => 'textfield',
+      '#size' => 30,
       '#default_value' => $address['premise'],
     );
     $form['locality'] = array(
