@@ -24,6 +24,6 @@
     <span class="postal-code"><?php print $address['postal_code'] ?></span>
   </div>
   <div>
-    <span class="country"><?php print $address['country'] ?></span>
+    <span class="country"><?php print $address['country_name'] ?></span>
   </div>
 </div>

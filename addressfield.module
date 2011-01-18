@@ -617,4 +617,9 @@ function addressfield_field_formatter_view($entity_type, $entity, $field, $insta
 function template_preprocess_addressfield_formatter(&$variables) {
   // Encode the address elements.
   $variables['address'] = array_map('check_plain', $variables['address']);
+
+  // Add the country name to the address.
+  include DRUPAL_ROOT . '/includes/locale.inc';
+  $countries = country_get_list();
+  $variables['address']['country_name'] = $countries[$variables['address']['country']];
 }

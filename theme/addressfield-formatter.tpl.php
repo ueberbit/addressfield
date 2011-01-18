@@ -26,6 +26,6 @@
     <span class="administrative_area"><?php print $address['administrative_area'] ?></span>
   </div>
   <div>
-    <span class="country"><?php print $address['country'] ?></span>
+    <span class="country"><?php print $address['country_name'] ?></span>
   </div>
 </div>
