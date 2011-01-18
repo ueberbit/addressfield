@@ -602,3 +602,11 @@ function addressfield_field_formatter_view($entity_type, $entity, $field, $insta
 
   return $element;
 }
+
+/**
+ * Preprocess function for the addressfield formatter.
+ */
+function template_preprocess_addressfield_formatter(&$variables) {
+  // Encode the address elements.
+  $variables['address'] = array_map('check_plain', $variables['address']);
+}
