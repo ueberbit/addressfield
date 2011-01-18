@@ -303,6 +303,11 @@ function addressfield_field_widget_form(&$form, &$form_state, $field, $instance,
     // Provide a wrapper ID for AJAX replacement based on country selection.
     $wrapper_id = drupal_html_class($field['field_name']) . '-' . $langcode . '-' . $delta . '-addressfield-wrapper';
 
+    // Wrap everything in a fieldset. This is not the best looking element,
+    // but it's the only wrapper available in Drupal we can properly use
+    // in that context, and it is overridable if necessary.
+    $element['#type'] = 'fieldset';
+
     $element['#prefix'] = '<div id="' . $wrapper_id . '">';
     $element['#suffix'] = '</div>';
 
