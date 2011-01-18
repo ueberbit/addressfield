@@ -8,4 +8,5 @@ files[] = addressfield.module
 files[] = includes/addressfield_form.inc
 files[] = includes/addressfield_form_default.inc
 files[] = includes/addressfield_form_br.inc
+files[] = includes/addressfield_form_gb.inc
 files[] = includes/addressfield_form_us.inc

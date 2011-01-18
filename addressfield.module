@@ -575,6 +575,7 @@ function addressfield_default_mapping() {
   return array(
     'default' => 'AddressFieldForm_default',
     'BR' => 'AddressFieldForm_br',
+    'GB' => 'AddressFieldForm_gb',
     'US' => 'AddressFieldForm_us',
     // TODO: complete the mapping.
   );
