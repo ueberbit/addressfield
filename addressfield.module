@@ -37,6 +37,8 @@ function addressfield_field_info() {
     'instance_settings' => array(),
     'default_widget' => 'addressfield_standard',
     'default_formatter' => 'addressfield_default',
+    'property_type' => 'addressfield',
+    'property_callbacks' => array('addressfield_property_info_callback'),
   );
 
   return $fields;
@@ -624,4 +626,116 @@ function template_preprocess_addressfield_formatter(&$variables) {
   include_once DRUPAL_ROOT . '/includes/locale.inc';
   $countries = country_get_list();
   $variables['address']['country_name'] = $countries[$variables['address']['country']];
+}
+
+
+/**
+ * Callback to alter the property info of address fields.
+ *
+ * @see addressfield_field_info().
+ */
+function addressfield_property_info_callback(&$info, $entity_type, $field, $instance, $field_type) {
+  $name = $field['field_name'];
+  $property = &$info[$entity_type]['bundles'][$instance['bundle']]['properties'][$name];
+
+  $property['type'] = ($field['cardinality'] != 1) ? 'list<addressfield>' : 'addressfield';
+  $property['getter callback'] = 'entity_metadata_field_verbatim_get';
+  $property['setter callback'] = 'entity_metadata_field_verbatim_set';
+  $property['auto creation'] = 'addressfield_default_values';
+  $property['property info'] = addressfield_data_property_info();
+
+  unset($property['query callback']);
+}
+
+/**
+ * Defines info for the properties of the address field data structure.
+ *
+  return array(
+    'country' => variable_get('site_default_country', NULL),
+    'xnl' => '',
+    'name_line' => '',
+    'first_name' => '',
+    'last_name' => '',
+    'organisation_name' => '',
+    'xal' => '',
+    'administrative_area' => '',
+    'sub_administrative_area' => '',
+    'locality' => '',
+    'dependent_locality' => '',
+    'postal_code' => '',
+    'thoroughfare' => '',
+    'premise' => '',
+    'sub_premise' => '',
+    'data' => array(),
+  );
+ *
+ */
+function addressfield_data_property_info($name = NULL) {
+  // Build an array of basic property information for the address field.
+  $properties = array(
+    'country' => array(
+      'label' => t('Country'),
+      'options list' => '_addressfield_country_options_list',
+    ),
+    'name_line' => array(
+      'label' => t('Full name'),
+    ),
+    'first_name' => array(
+      'label' => t('First name'),
+    ),
+    'last_name' => array(
+      'label' => t('Last name'),
+    ),
+    'organisation_name' => array(
+      'label' => t('Company'),
+    ),
+    'administrative_area' => array(
+      'label' => t('Administrative area (i.e. State / Province)'),
+    ),
+    'sub_administrative_area' => array(
+      'label' => t('Sub administrative area'),
+    ),
+    'locality' => array(
+      'label' => t('Locality (i.e. City)'),
+    ),
+    'dependent_locality' => array(
+      'label' => t('Dependent locality'),
+    ),
+    'postal_code' => array(
+      'label' => t('Postal code'),
+    ),
+    'thoroughfare' => array(
+      'label' => t('Thoroughfare (i.e. Street address)'),
+    ),
+    'premise' => array(
+      'label' => t('Premise (i.e. Apartment / Suite number)'),
+    ),
+    'name_line' => array(
+      'label' => t('Sub premise'),
+    ),
+  );
+
+  // Add the default values for each of the address field properties.
+  foreach ($properties as $key => &$value) {
+    $value += array(
+      'description' => !empty($name) ? t('!label of field %name', array('!label' => $value['label'], '%name' => $name)) : '',
+      'type' => 'text',
+      'getter callback' => 'entity_property_verbatim_get',
+      'setter callback' => 'entity_property_verbatim_set',
+    );
+  }
+
+  return $properties;
+}
+
+/**
+ * Wraps country_get_list() for use as an Entity API options list.
+ */
+function _addressfield_country_options_list() {
+  // Necessary for country_get_list().
+  if (!function_exists('country_get_list')) {
+    include_once DRUPAL_ROOT . '/includes/locale.inc';
+  }
+
+  return country_get_list();
 }
