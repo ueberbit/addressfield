@@ -592,6 +592,10 @@ function addressfield_field_formatter_info() {
       'label' => t('Default'),
       'field types' => array('addressfield'),
     ),
+    'addressfield_name' => array(
+      'label' => t('Name only'),
+      'field types' => array('addressfield'),
+    )
   );
 }
 
@@ -610,6 +614,46 @@ function addressfield_field_formatter_view($entity_type, $entity, $field, $insta
         );
       }
       break;
+
+    case 'addressfield_name':
+      // Display parts of the name based on the field's widget settings.
+      $format = $instance['widget']['settings']['name_format'];
+
+      foreach ($items as $delta => $item) {
+        // If the name was entered in a single full name textfield...
+        if (strpos($format, 'name_line') === 0) {
+          // Display the name line including the company name if present.
+          if (!empty($item['organisation_name'])) {
+            $xnl_name = t('@name_line, @organisation_name', array(
+              '@name_line' => $item['name_line'],
+              '@organisation_name' => $item['organisation_name']
+            ));
+          }
+          else {
+            $xnl_name = t('@name_line', array('@name_line' => $item['name_line']));
+          }
+        }
+        elseif (strpos($format, 'first_last') === 0) {
+          // Display the first and last name including the company name if present.
+          if (!empty($item['organisation_name'])) {
+            $xnl_name = t('@first_name @last_name, @organisation_name', array(
+              '@first_name' => $item['first_name'],
+              '@last_name' => $item['last_name'],
+              '@organisation_name' => $item['organisation_name']
+            ));
+          }
+          else {
+            $xnl_name = t('@first_name @last_name', array(
+              '@first_name' => $item['first_name'],
+              '@last_name' => $item['last_name']
+            ));
+          }
+        }
+
+        $element[$delta] = array(
+          '#markup' => !empty($xnl_name) ? $xnl_name : t('No name'),
+        );
+      }
   }
 
   return $element;
