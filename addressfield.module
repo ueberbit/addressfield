@@ -595,14 +595,51 @@ function addressfield_field_formatter_info() {
     'addressfield_name' => array(
       'label' => t('Name only'),
       'field types' => array('addressfield'),
+      'settings' => array(
+        'organisation' => FALSE,
+      ),
     )
   );
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function addressfield_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+  $element = array();
+
+  // Add the option to include the company name with the full name.
+  if ($display['type'] == 'addressfield_name') {
+    $element['organisation'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Include the company name with the full name.'),
+      '#default_value' => !empty($settings['organisation']),
+    );
+
+    return $element;
+  }
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function addressfield_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  // Tell whether or not the name formatter includes the company.
+  if ($display['type'] == 'addressfield_name') {
+    return empty($settings['organisation']) ? t('Displaying only the full name.') : t('Displaying the full name and company.');
+  }
 }
 
 /**
  * Implements hook_field_formatter_view().
  */
 function addressfield_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $settings = $display['settings'];
   $element = array();
 
   switch ($display['type']) {
@@ -623,7 +660,7 @@ function addressfield_field_formatter_view($entity_type, $entity, $field, $insta
         // If the name was entered in a single full name textfield...
         if (strpos($format, 'name_line') === 0) {
           // Display the name line including the company name if present.
-          if (!empty($item['organisation_name'])) {
+          if ($settings['organisation'] && !empty($item['organisation_name'])) {
             $xnl_name = t('@name_line, @organisation_name', array(
               '@name_line' => $item['name_line'],
               '@organisation_name' => $item['organisation_name']
@@ -635,7 +672,7 @@ function addressfield_field_formatter_view($entity_type, $entity, $field, $insta
         }
         elseif (strpos($format, 'first_last') === 0) {
           // Display the first and last name including the company name if present.
-          if (!empty($item['organisation_name'])) {
+          if ($settings['organisation'] && !empty($item['organisation_name'])) {
             $xnl_name = t('@first_name @last_name, @organisation_name', array(
               '@first_name' => $item['first_name'],
               '@last_name' => $item['last_name'],
