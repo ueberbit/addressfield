@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Interface for an address field form.

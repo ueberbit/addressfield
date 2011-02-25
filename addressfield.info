@@ -1,4 +1,3 @@
-; $Id$
 name = Address Field
 description = Manage a flexible address field, implementing the xNAL standard.
 core = 7.x

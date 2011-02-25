@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Address handler for the GB.
