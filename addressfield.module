@@ -578,6 +578,7 @@ function addressfield_default_mapping() {
     'BR' => 'AddressFieldForm_br',
     'GB' => 'AddressFieldForm_gb',
     'US' => 'AddressFieldForm_us',
+    'IT' => 'AddressFieldForm_it'
     // TODO: complete the mapping.
   );
 }
@@ -729,26 +730,6 @@ function addressfield_property_info_callback(&$info, $entity_type, $field, $inst
 
 /**
  * Defines info for the properties of the address field data structure.
- *
-  return array(
-    'country' => variable_get('site_default_country', NULL),
-    'xnl' => '',
-    'name_line' => '',
-    'first_name' => '',
-    'last_name' => '',
-    'organisation_name' => '',
-    'xal' => '',
-    'administrative_area' => '',
-    'sub_administrative_area' => '',
-    'locality' => '',
-    'dependent_locality' => '',
-    'postal_code' => '',
-    'thoroughfare' => '',
-    'premise' => '',
-    'sub_premise' => '',
-    'data' => array(),
-  );
- *
  */
 function addressfield_data_property_info($name = NULL) {
   // Build an array of basic property information for the address field.
