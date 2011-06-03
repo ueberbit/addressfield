@@ -186,7 +186,7 @@ function addressfield_default_values() {
     'thoroughfare' => '',
     'premise' => '',
     'sub_premise' => '',
-    'data' => array(),
+    'data' => '',
   );
 }
 
