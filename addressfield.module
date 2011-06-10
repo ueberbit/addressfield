@@ -171,7 +171,7 @@ function addressfield_field_schema() {
  */
 function addressfield_default_values($available_countries = NULL) {
   if (!isset($available_countries)) {
-    $available_countries = country_get_list();
+    $available_countries = _addressfield_country_options_list();
   }
   // Use the default country of the site if possible.
   $default_country = variable_get('site_default_country', NULL);
@@ -232,9 +232,6 @@ function addressfield_field_widget_info() {
  * Implements hook_field_widget_settings_form()
  */
 function addressfield_field_widget_settings_form($field, $instance) {
-  // Necessary for country_get_list().
-  include_once DRUPAL_ROOT . '/includes/locale.inc';
-
   $widget = $instance['widget'];
   $defaults = field_info_widget_settings($widget['type']);
   $settings = array_merge($defaults, $widget['settings']);
@@ -245,7 +242,7 @@ function addressfield_field_widget_settings_form($field, $instance) {
       '#multiple' => TRUE,
       '#title' => t('Available countries'),
       '#description' => t('If no countries are selected, all countries will be available.'),
-      '#options' => country_get_list(),
+      '#options' => _addressfield_country_options_list(),
       '#default_value' => $settings['available_countries'],
     );
 
@@ -271,9 +268,6 @@ function addressfield_field_widget_settings_form($field, $instance) {
  */
 function addressfield_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
   $settings = $instance['widget']['settings'];
-
-  // Necessary for country_get_list().
-  include_once DRUPAL_ROOT . '/includes/locale.inc';
 
   // Generate a specific key used to identify this element to restore a default
   // value upon AJAX submission regardless of where this element is in the
@@ -306,7 +300,8 @@ function addressfield_field_widget_form(&$form, &$form_state, $field, $instance,
   }
 
   // Merge in default values to provide a value for every expected array key.
-  $address += addressfield_default_values(country_get_list());
+  $countries = _addressfield_country_options_list($field, $instance);
+  $address += addressfield_default_values($countries);
 
   // Add the form elements for the standard widget, which includes a country
   // select list at the top that reloads the available address elements when the
@@ -323,18 +318,11 @@ function addressfield_field_widget_form(&$form, &$form_state, $field, $instance,
     $element['#prefix'] = '<div id="' . $wrapper_id . '">';
     $element['#suffix'] = '</div>';
 
-    // Build an options array of available countries to choose from.
-    $options = country_get_list();
-
-    if (!empty($settings['available_countries'])) {
-      $options = array_intersect_key($options, $settings['available_countries']);
-    }
-
     // Add an AJAX enabled country select list.
     $element['country'] = array(
       '#type' => 'select',
       '#title' => t('Country'),
-      '#options' => $options,
+      '#options' => $countries,
       '#default_value' => $address['country'],
       '#required' => TRUE,
       '#element_validate' => array('addressfield_standard_country_validate'),
@@ -715,8 +703,7 @@ function template_preprocess_addressfield_formatter(&$variables) {
   $variables['address'] = array_map('check_plain', $variables['address']);
 
   // Add the country name to the address.
-  include_once DRUPAL_ROOT . '/includes/locale.inc';
-  $countries = country_get_list();
+  $countries = _addressfield_country_options_list();
   $variables['address']['country_name'] = $countries[$variables['address']['country']];
 }
 
@@ -803,11 +790,15 @@ function addressfield_data_property_info($name = NULL) {
 /**
  * Wraps country_get_list() for use as an Entity API options list.
  */
-function _addressfield_country_options_list() {
+function _addressfield_country_options_list($field = NULL, $instance = NULL) {
   // Necessary for country_get_list().
-  if (!function_exists('country_get_list')) {
-    include_once DRUPAL_ROOT . '/includes/locale.inc';
+  require_once DRUPAL_ROOT . '/includes/locale.inc';
+
+  $countries = country_get_list();
+
+  if (!empty($instance['widget']['settings']['available_countries'])) {
+    $countries = array_intersect_key($options, $instance['widget']['settings']['available_countries']);
   }
 
-  return country_get_list();
+  return $countries;
 }
