@@ -797,7 +797,7 @@ function _addressfield_country_options_list($field = NULL, $instance = NULL) {
   $countries = country_get_list();
 
   if (!empty($instance['widget']['settings']['available_countries'])) {
-    $countries = array_intersect_key($options, $instance['widget']['settings']['available_countries']);
+    $countries = array_intersect_key($countries, $instance['widget']['settings']['available_countries']);
   }
 
   return $countries;
