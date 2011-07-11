@@ -589,6 +589,12 @@ function addressfield_field_formatter_view($entity_type, $entity, $field, $insta
 
   switch ($display['type']) {
     case 'addressfield_default':
+      if (!empty($settings['use_widget_handlers'])) {
+        $handlers = $instance['widget']['settings']['format_handlers'];
+      }
+      else {
+        $handlers = $settings['format_handlers'];
+      }
       foreach ($items as $delta => $address) {
         // Generate the address format.
         $context = array(
@@ -598,7 +604,7 @@ function addressfield_field_formatter_view($entity_type, $entity, $field, $insta
           'langcode' => $langcode,
           'delta' => $delta,
         );
-        $element[$delta] = addressfield_generate($address, $settings['format_handlers'], $context);
+        $element[$delta] = addressfield_generate($address, $handlers, $context);
       }
       break;
   }
