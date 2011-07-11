@@ -346,7 +346,7 @@ function addressfield_field_widget_info() {
     'field types' => array('addressfield'),
     'settings' => array(
       'available_countries' => array(),
-      'format handlers' => array('address'),
+      'format_handlers' => array('address'),
     ),
   );
 
