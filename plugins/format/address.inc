@@ -26,6 +26,7 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
   $format['street_block'] = array(
     '#type' => 'addressfield_container',
     '#attributes' => array('class' => array('street-block')),
+    '#weight' => 0,
   );
   $format['street_block']['thoroughfare'] = array(
     '#title' => t('Address 1'),
@@ -44,6 +45,7 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
   $format['locality_block'] = array(
     '#type' => 'addressfield_container',
     '#attributes' => array('class' => array('addressfield-container-inline', 'locality-block')),
+    '#weight' => 50,
   );
   $format['locality_block']['#attached']['css'][] = drupal_get_path('module', 'addressfield') . '/addressfield.css';
   $format['locality_block']['postal_code'] = array(
@@ -64,6 +66,7 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
     '#options' => _addressfield_country_options_list(),
     '#required' => TRUE,
     '#attributes' => array('class' => array('country')),
+    '#weight' => 100,
   );
 
   // Those countries do not seem to have a relevant postal code.
@@ -325,7 +328,7 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
     }
 
     // Form mode, move the country selector to the top of the form.
-    $format = array('country' => $format['country']) + $format;
+    $format['country']['#weight'] = -10;
 
     // Limit it to the countries supported by the widget.
     if (isset($context['field'])) {
