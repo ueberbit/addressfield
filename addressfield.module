@@ -25,6 +25,16 @@ function addressfield_ctools_plugin_type() {
 }
 
 /**
+ * Implements hook_views_api().
+ */
+function addressfield_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'addressfield') . '/views',
+  );
+}
+
+/**
  * Get the list of format plugins.
  */
 function addressfield_format_plugins() {
@@ -717,8 +727,30 @@ function _addressfield_country_options_list($field = NULL, $instance = NULL) {
 
   $countries = country_get_list();
 
-  if (!empty($instance['widget']['settings']['available_countries'])) {
-    $countries = array_intersect_key($countries, $instance['widget']['settings']['available_countries']);
+  if (isset($field)) {
+    // If the instance is not specified, loop against all the instances of the field.
+    if (!isset($instance)) {
+      $instances = array();
+      foreach ($field['bundles'] as $entity_type => $bundles) {
+        foreach ($bundles as $bundle_name) {
+          $instances[] = field_info_instance($entity_type, $field['field_name'], $bundle_name);
+        }
+      }
+    }
+    else {
+      $instances = array($instance);
+    }
+
+    foreach ($instances as $instance) {
+      if (!empty($instance['widget']['settings']['available_countries'])) {
+        $countries = array_intersect_key($countries, $instance['widget']['settings']['available_countries']);
+      }
+      else {
+        // This instance allow all the countries.
+        $countries = country_get_list();
+        break;
+      }
+    }
   }
 
   return $countries;
