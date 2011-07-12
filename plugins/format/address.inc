@@ -85,6 +85,7 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
       '#size' => 10,
       '#required' => TRUE,
       '#prefix' => ' ',
+      '#attributes' => array('class' => array('state')),
     );
   }
 
