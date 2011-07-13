@@ -146,12 +146,6 @@ function addressfield_process_format_form($format, &$form_state, $complete_form)
     ctools_plugin_load_function('addressfield', 'format', $handler, 'format callback');
   }
 
-  // When rebuilding the form, we want to start with the data stored in the
-  // form state, not from the user input.
-  if (!empty($form_state['rebuild']) && isset($form_state['input'])) {
-    drupal_array_set_nested_value($form_state['input'], $format['#parents'], NULL);
-  }
-
   _addressfield_process_format_form($format, $format['#address'], $format['#required']);
   return $format;
 }
