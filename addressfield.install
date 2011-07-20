@@ -13,7 +13,7 @@ function addressfield_field_schema() {
       'default' => '',
     ),
     'administrative_area' => array(
-      'description' => 'The administrative area of this address.',
+      'description' => 'The administrative area of this address. (i.e. State/Province)',
       'type' => 'varchar',
       'length' => 255,
       'default' => '',
@@ -27,7 +27,7 @@ function addressfield_field_schema() {
       'not null' => FALSE,
     ),
     'locality' => array(
-      'description' => 'The locality of this address.',
+      'description' => 'The locality of this address. (i.e. City)',
       'type' => 'varchar',
       'length' => 255,
       'default' => '',
@@ -48,14 +48,14 @@ function addressfield_field_schema() {
       'not null' => FALSE,
     ),
     'thoroughfare' => array(
-      'description' => 'The thoroughfare of this address.',
+      'description' => 'The thoroughfare of this address. (i.e. Street address)',
       'type' => 'varchar',
       'length' => 255,
       'default' => '',
       'not null' => FALSE,
     ),
     'premise' => array(
-      'description' => 'The premise of this address.',
+      'description' => 'The premise of this address. (i.e. Apartment / Suite number)',
       'type' => 'varchar',
       'length' => 255,
       'default' => '',
