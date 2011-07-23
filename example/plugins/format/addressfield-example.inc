@@ -3557,12 +3557,12 @@ function addressfield_form_ch_postal_code_validation($element, &$form_state, &$f
 
     $city = $data[$element['#value']];
 
+    // Set the new values in the form.
     drupal_array_set_nested_value($form_state['values'], array_merge($base_parents, array('locality')), $city['town'], TRUE);
     drupal_array_set_nested_value($form_state['values'], array_merge($base_parents, array('administrative_area')), $city['canton'], TRUE);
-    drupal_array_set_nested_value($form, array_merge($base_array_parents, array('locality_block', 'locality', '#value')), $city['town'], TRUE);
-    //drupal_array_set_nested_value($form_state['values'], array_merge($base, array('administrative_area')), $city['canton'], TRUE);
-    //print_r($form['commerce_customer_address']['und'][0]['locality_block']['locality']);
 
-    $form_state['rebuild'] = TRUE;
+    // Discard value the user has already entered there.
+    drupal_array_set_nested_value($form_state['input'], array_merge($base_parents, array('locality')), NULL, TRUE);
+    drupal_array_set_nested_value($form_state['input'], array_merge($base_parents, array('administrative_area')), NULL, TRUE);
   }
 }
