@@ -74,7 +74,8 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
     unset($format['locality_block']['postal_code']);
 
     // Remove the prefix from the first widget of the block.
-    $first_child = reset(element_children($format['locality_block']));
+    $element_children = element_children($format['locality_block']);
+    $first_child = reset($element_children);
     unset($format['locality_block'][$first_child]['#prefix']);
   }
 
@@ -335,7 +336,8 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
     $format['locality_block']['postal_code'] = $postal_code_widget;
 
     // Remove the prefix from the first widget of the block.
-    $first_child = reset(element_children($format['locality_block']));
+    $element_children = element_children($format['locality_block']);
+    $first_child = reset($element_children);
     unset($format['locality_block'][$first_child]['#prefix']);
   }
 
