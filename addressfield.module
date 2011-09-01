@@ -72,7 +72,7 @@ function addressfield_format_plugins_options() {
  * handler is passed the format in turn, and can add to or modify the format.
  *
  * The format itself is a renderable array stub. This stub will be transformed
- * into either a Form API array suitable for use as part of a form or into a 
+ * into either a Form API array suitable for use as part of a form or into a
  * renderable array suitable for use with drupal_render(). The following
  * modifications are done:
  *   - when rendering as a form, every element which name (its key in the array)
@@ -538,13 +538,13 @@ function addressfield_field_formatter_settings_form($field, $instance, $view_mod
   $display = $instance['display'][$view_mode];
   $settings = $display['settings'];
 
-  $form['use_widget_handlers'] = array(
+  $element['use_widget_handlers'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use the same configuration as the widget'),
     '#default_value' => !empty($settings['use_widget_handlers']),
   );
 
-  $form['format_handlers'] = array(
+  $element['format_handlers'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Format handlers'),
     '#options' => addressfield_format_plugins_options(),
@@ -553,7 +553,7 @@ function addressfield_field_formatter_settings_form($field, $instance, $view_mod
     '#element_validate' => array('_addressfield_field_formatter_settings_form_validate')
   );
 
-  return $form;
+  return $element;
 }
 
 /**
