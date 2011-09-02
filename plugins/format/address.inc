@@ -324,6 +324,19 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
     );
     $format['locality_block']['administrative_area']['#title'] = t('Province');
   }
+  else if ($address['country'] == 'AU') {
+    $format['locality_block']['administrative_area']['#options'] = array(
+      ''   => t('--'),
+      'ACT' => t('Australian Capital Territory'),
+      'NSW' => t('New South Wales'),
+      'NT' => t('Northern Territory'),
+      'QLD' => t('Queensland'),
+      'SA' => t('South Australia'),
+      'TAS' => t('Tasmania'),
+      'VIC' => t('Victoria'),
+      'WA' => t('Western Australia'),
+    );
+  }
 
   // Those countries tend to put the postal code after the locality.
   if (in_array($address['country'], array('AU', 'BD', 'BF', 'BH', 'BM', 'BN', 'BT', 'CA', 'FM', 'GB', 'ID', 'IE', 'IN', 'JM', 'JO', 'KH', 'LB', 'LS', 'LV', 'MM', 'MN', 'MV', 'MW', 'NG', 'NP', 'NZ', 'PE', 'PK', 'PR', 'PW', 'SA', 'SG', 'SO', 'TH', 'US', 'VI', 'VG', 'VN'))) {
