@@ -44,7 +44,7 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
   );
   $format['locality_block'] = array(
     '#type' => 'addressfield_container',
-    '#attributes' => array('class' => array('addressfield-container-inline', 'locality-block')),
+    '#attributes' => array('class' => array('addressfield-container-inline', 'locality-block', 'country-' . $address['country'])),
     '#weight' => 50,
   );
   $format['locality_block']['#attached']['css'][] = drupal_get_path('module', 'addressfield') . '/addressfield.css';
@@ -352,6 +352,44 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
     $element_children = element_children($format['locality_block']);
     $first_child = reset($element_children);
     unset($format['locality_block'][$first_child]['#prefix']);
+  }
+
+  // GB-specific tweaks
+  if ($address['country'] == 'GB') {
+    // Locality
+    $format['locality_block']['locality'] = array_merge(
+      $format['locality_block']['locality'],
+      array(
+        '#title' => t('Town/City'),
+        '#weight' => 40,
+        '#prefix' => '',
+        '#tag' => 'div',
+      )
+    );
+
+    // Administrative
+    $format['locality_block']['administrative_area'] = array_merge(
+      $format['locality_block']['administrative_area'],
+      array(
+        '#title' => t('County'),
+        '#required' => FALSE,
+        '#weight' => 50,
+        '#size' => 30,
+        '#prefix' => '',
+        '#tag' => 'div',
+      )
+    );
+
+    // Postal code
+    $format['locality_block']['postal_code'] = array_merge(
+      $format['locality_block']['postal_code'],
+      array(
+        '#title' => t('Postcode'),
+        '#weight' => 60,
+        '#prefix' => '',
+        '#tag' => 'div',
+      )
+    );
   }
 
   if ($context['mode'] == 'form') {
