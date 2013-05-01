@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Hide then country when only one country is available.
+ * Hide the country when only one country is available.
  */
 
 $plugin = array(
