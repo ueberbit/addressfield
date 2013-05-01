@@ -475,7 +475,8 @@ function addressfield_field_widget_form(&$form, &$form_state, $field, $instance,
 }
 
 /**
- * Element validate callback: rebuilds the form on country change and stores the current address value in the $form_state for retrieval on rebuild.
+ * Element validate callback: rebuilds the form on country change and stores the
+ * current address value in the $form_state for retrieval on rebuild.
  */
 function addressfield_standard_country_validate($element, &$form_state) {
   // If the country was changed, rebuild the form.

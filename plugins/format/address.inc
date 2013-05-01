@@ -49,7 +49,7 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
   );
   $format['locality_block']['#attached']['css'][] = drupal_get_path('module', 'addressfield') . '/addressfield.css';
   $format['locality_block']['postal_code'] = array(
-    '#title' => t('Postal Code'),
+    '#title' => t('Postal code'),
     '#size' => 10,
     '#required' => TRUE,
     '#attributes' => array('class' => array('postal-code')),
