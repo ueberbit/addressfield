@@ -655,10 +655,23 @@ function addressfield_property_info_callback(&$info, $entity_type, $field, $inst
   $property['type'] = ($field['cardinality'] != 1) ? 'list<addressfield>' : 'addressfield';
   $property['getter callback'] = 'entity_metadata_field_verbatim_get';
   $property['setter callback'] = 'entity_metadata_field_verbatim_set';
-  $property['auto creation'] = 'addressfield_default_values';
+  $property['auto creation'] = 'addressfield_auto_creation';
   $property['property info'] = addressfield_data_property_info();
 
   unset($property['query callback']);
+}
+
+/**
+ * Auto creation callback for an addressfield value array.
+ *
+ * @see addressfield_property_info_callback()
+ */
+function addressfield_auto_creation() {
+  // We can't call addressfield_default_values() directly, because it has an
+  // optional array argument that will receive an invalid value when Entity API
+  // tries to call it directly with its usual $property_name and $context
+  // arguments.
+  return addressfield_default_values();
 }
 
 /**
