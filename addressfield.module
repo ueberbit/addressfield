@@ -220,9 +220,9 @@ function _addressfield_render_address(&$format, $address) {
         $child['#access'] = FALSE;
       }
 
-      // Add #prefix and #field_suffix to the prefixes and suffixes.
-      if (isset($child['#prefix'])) {
-        $child['#prefix'] = (isset($child['#prefix']) ? $child['#prefix'] : '') . $child['#prefix'];
+      // Add #field_prefix and #field_suffix to the prefixes and suffixes.
+      if (isset($child['#field_prefix'])) {
+        $child['#prefix'] = (isset($child['#prefix']) ? $child['#prefix'] : '') . $child['#field_prefix'];
       }
       if (isset($child['#field_suffix'])) {
         $child['#suffix'] = (isset($child['#suffix']) ? $child['#suffix'] : '') . $child['#field_suffix'];

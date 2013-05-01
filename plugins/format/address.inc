@@ -58,7 +58,7 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
     '#title' => t('City'),
     '#size' => 30,
     '#required' => TRUE,
-    '#prefix' => ' ',
+    '#prefix' => ' ',
     '#attributes' => array('class' => array('locality')),
   );
   $format['country'] = array(
@@ -85,7 +85,7 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
       '#title' => t('State'),
       '#size' => 10,
       '#required' => TRUE,
-      '#prefix' => ' ',
+      '#prefix' => ' ',
       '#attributes' => array('class' => array('state')),
     );
   }
@@ -342,7 +342,7 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
   if (in_array($address['country'], array('AU', 'BD', 'BF', 'BH', 'BM', 'BN', 'BT', 'CA', 'FM', 'GB', 'ID', 'IN', 'JM', 'JO', 'KH', 'LB', 'LS', 'LV', 'MM', 'MN', 'MV', 'MW', 'NG', 'NP', 'NZ', 'PE', 'PK', 'PR', 'PW', 'SA', 'SG', 'SO', 'TH', 'US', 'VI', 'VG', 'VN'))) {
     // Take the widget out of the array.
     $postal_code_widget = $format['locality_block']['postal_code'];
-    $postal_code_widget['#prefix'] = ' ';
+    $postal_code_widget['#prefix'] = ' ';
     unset($format['locality_block']['postal_code']);
 
     // Add it back.
