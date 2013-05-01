@@ -508,7 +508,13 @@ function addressfield_standard_widget_refresh($form, $form_state) {
   // Return the address block, but remove the '_weight' element inserted
   // by the field API.
   unset($element['_weight']);
-  return $element;
+
+  // Replace the address field widget with the updated widget and focus on the
+  // new country select list.
+  $commands[] = ajax_command_replace(NULL, render($element));
+  $commands[] = ajax_command_invoke('#' . $element['country']['#id'], 'focus');
+
+  return array('#type' => 'ajax', '#commands' => $commands);
 }
 
 /**

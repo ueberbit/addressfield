@@ -412,7 +412,6 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
     $format['country']['#ajax'] = array(
       'callback' => 'addressfield_standard_widget_refresh',
       'wrapper' => $format['#wrapper_id'],
-      'method' => 'replace',
     );
     $format['country']['#element_validate'] = array('addressfield_standard_country_validate');
     // Don't validate any element when the country is changed.
