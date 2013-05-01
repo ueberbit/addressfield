@@ -1,11 +1,11 @@
 .addressfield-container-inline > div.form-item {
-  float: left;
-  margin-right: 1em;
+  float: left; /* LTR */
+  margin-right: 1em; /* LTR */
 }
 
 .addressfield-container-inline.country-GB > div.form-item {
   float: none;
-  margin-right: auto;
+  margin-right: auto; /* LTR */
 }
 
 /* Clear-fix markup for the inline container */
