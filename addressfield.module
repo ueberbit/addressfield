@@ -196,7 +196,7 @@ function _addressfield_render_address(&$format, $address) {
 
     // Automatically expand elements that matches one of the field of the
     // address structure.
-    if (in_array($key, array('name_line', 'first_name', 'last_name', 'organisation_name', 'country', 'administrative_area', 'sub_administrative_area', 'locality', 'dependent_locality', 'postal_code', 'thoroughfare', 'premise', 'sub_premise'))) {
+    if (in_array($key, array('name_line', 'first_name', 'last_name', 'organisation_name', 'country', 'administrative_area', 'sub_administrative_area', 'locality', 'dependent_locality', 'postal_code', 'thoroughfare', 'premise', 'sub_premise'), TRUE)) {
       if (isset($child['#render_type'])) {
         $child['#type'] = $child['#render_type'];
       }
