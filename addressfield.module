@@ -318,8 +318,10 @@ function addressfield_default_values($available_countries = NULL) {
   if (!isset($available_countries)) {
     $available_countries = _addressfield_country_options_list();
   }
+
   // Use the default country of the site if possible.
   $default_country = variable_get('site_default_country', NULL);
+
   // If the default country is undefined or not in the list of available countries,
   // just fallback to the first country in the list.
   if (!$default_country || !isset($available_countries[$default_country])) {
@@ -436,8 +438,14 @@ function addressfield_field_widget_form(&$form, &$form_state, $field, $instance,
     $address = (array) $instance['default_value'][0];
   }
 
-  // Merge in default values to provide a value for every expected array key.
+  // Determine the list of available countries, and if the currently selected
+  // country is not in it, unset it so it can be reset to the default country.
   $countries = _addressfield_country_options_list($field, $instance);
+  if (!in_array($address['country'], $countries, TRUE)) {
+    unset($address['country']);
+  }
+
+  // Merge in default values to provide a value for every expected array key.
   $address += addressfield_default_values($countries);
 
   // Add the form elements for the standard widget, which includes a country
