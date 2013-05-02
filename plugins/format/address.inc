@@ -84,7 +84,7 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
   static $countries_administrative_area = array('AR', 'AU', 'BR', 'BS', 'BY', 'BZ', 'CA', 'CN', 'DO', 'EG', 'ES', 'FJ', 'FM', 'GB', 'HN', 'ID', 'IE', 'IN', 'IT', 'JO', 'JP', 'KI', 'KN', 'KR', 'KW', 'KY', 'KZ', 'MX', 'MY', 'MZ', 'NG', 'NI', 'NR', 'NZ', 'OM', 'PA', 'PF', 'PG', 'PH', 'PR', 'PW', 'RU', 'SM', 'SO', 'SR', 'SV', 'TH', 'TW', 'UA', 'US', 'UY', 'VE', 'VI', 'VN', 'YU', 'ZA');
   if (in_array($address['country'], $countries_administrative_area)) {
     $format['locality_block']['administrative_area'] = array(
-      '#title' => t('State'),
+      '#title' => t('State', array(), array('context' => 'addressfield')),
       '#size' => 10,
       '#required' => TRUE,
       '#prefix' => ' ',
