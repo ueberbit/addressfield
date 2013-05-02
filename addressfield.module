@@ -97,20 +97,26 @@ function addressfield_format_plugins_options() {
  * @param $handlers
  *   The format handlers to use to generate the format.
  * @param $context
- *   An array of context arguments:
- *     - 'mode': can be either 'form' or 'render'
- *     - (optional) 'field': when generated for a field, the field
- *     - (optional) 'instance': when generated for a field, the field instance
- *     - (optional) 'langcode': when generated for a field, the langcode
- *       this field is being rendered in.
- *     - (optional) 'delta': when generated for a field, the delta of the
- *       currently handled address.
+ *   An associative array of context information pertaining to how the address
+ *   format should be generated. If no mode is given, it will initialize to the
+ *   default value. The remaining context keys should only be present when the
+ *   address format is being generated for a field:
+ *   - mode: either 'form' or 'render'; defaults to 'render'.
+ *   - field: the field info array.
+ *   - instance: the field instance array.
+ *   - langcode: the langcode of the language the field is being rendered in.
+ *   - delta: the delta value of the given address.
  *
  * @return
- *   A rendered array suitable for use as part of a form (if 'mode' is 'form'),
- *   or suitable to pass to drupal_render().
+ *   A renderable array suitable for use as part of a form (if 'mode' is 'form')
+ *   or for formatted address output when passed to drupal_render().
  */
 function addressfield_generate($address, array $handlers, array $context = array()) {
+  // If no mode is given in the context array, default it to 'render'.
+  if (empty($context['mode'])) {
+    $context['mode'] = 'render';
+  }
+
   ctools_include('plugins');
   $format = array();
   $format['#handlers'] = $handlers;
@@ -129,7 +135,7 @@ function addressfield_generate($address, array $handlers, array $context = array
     $format['#process'][] = 'addressfield_process_format_form';
     $format['#required'] = FALSE;
   }
-  else {
+  elseif ($context['mode'] == 'render') {
     $format['#pre_render'][] = 'addressfield_render_address';
   }
 
