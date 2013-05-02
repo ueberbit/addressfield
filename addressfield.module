@@ -380,6 +380,7 @@ function addressfield_field_widget_settings_form($field, $instance) {
   $widget = $instance['widget'];
   $defaults = field_info_widget_settings($widget['type']);
   $settings = array_merge($defaults, $widget['settings']);
+  $form = array();
 
   if ($widget['type'] == 'addressfield_standard') {
     $form['available_countries'] = array(
