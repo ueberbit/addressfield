@@ -441,7 +441,7 @@ function addressfield_field_widget_form(&$form, &$form_state, $field, $instance,
   // Determine the list of available countries, and if the currently selected
   // country is not in it, unset it so it can be reset to the default country.
   $countries = _addressfield_country_options_list($field, $instance);
-  if (!in_array($address['country'], $countries, TRUE)) {
+  if (!empty($address['country']) && !in_array($address['country'], $countries, TRUE)) {
     unset($address['country']);
   }
 
