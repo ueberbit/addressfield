@@ -722,9 +722,6 @@ function addressfield_data_property_info($name = NULL) {
     'premise' => array(
       'label' => t('Premise (i.e. Apartment / Suite number)'),
     ),
-    'name_line' => array(
-      'label' => t('Sub premise'),
-    ),
   );
 
   // Add the default values for each of the address field properties.
