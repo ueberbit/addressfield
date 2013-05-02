@@ -523,6 +523,9 @@ function addressfield_standard_widget_refresh($form, $form_state) {
   $commands[] = ajax_command_replace(NULL, render($element));
   $commands[] = ajax_command_invoke('#' . $element['country']['#id'], 'focus');
 
+  // Allow other modules to add arbitrary AJAX commands on the refresh.
+  drupal_alter('addressfield_standard_widget_refresh', $commands, $form, $form_state);
+
   return array('#type' => 'ajax', '#commands' => $commands);
 }
 
