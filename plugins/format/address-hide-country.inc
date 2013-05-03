@@ -18,5 +18,7 @@ $plugin = array(
  * @see CALLBACK_addressfield_format_callback()
  */
 function addressfield_format_address_hide_country(&$format, $address, $context = array()) {
-  $format['country']['#access'] = (count($format['country']['#options']) > 1);
+  if (!empty($format['country']['#options']) && count($format['country']['#options']) == 1) {
+    $format['country']['#access'] =  FALSE;
+  }
 }
