@@ -168,7 +168,6 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
     }
   }
   else if ($address['country'] == 'IT') {
-    $format['locality_block']['administrative_area']['#render_option_value'] = TRUE;
     $format['locality_block']['administrative_area']['#options'] = array(
       '' => t('--'),
       'AG' => t('Agrigento'),
