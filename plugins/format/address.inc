@@ -64,6 +64,7 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
   $format['country'] = array(
     '#title' => t('Country'),
     '#options' => _addressfield_country_options_list(),
+    '#render_option_value' => TRUE,
     '#required' => TRUE,
     '#attributes' => array('class' => array('country')),
     '#weight' => 100,
@@ -161,8 +162,13 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
       'VI' => t('Virgin Islands'),
     );
     $format['locality_block']['postal_code']['#title'] = t('ZIP Code');
+
+    if ($context['mode'] == 'render') {
+      $format['locality_block']['locality']['#suffix'] = ',';
+    }
   }
   else if ($address['country'] == 'IT') {
+    $format['locality_block']['administrative_area']['#render_option_value'] = TRUE;
     $format['locality_block']['administrative_area']['#options'] = array(
       '' => t('--'),
       'AG' => t('Agrigento'),
@@ -279,6 +285,7 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
     $format['locality_block']['administrative_area']['#title'] = t('Province');
   }
   else if ($address['country'] == 'BR') {
+    $format['locality_block']['administrative_area']['#render_option_value'] = TRUE;
     $format['locality_block']['administrative_area']['#options'] = array(
       '' => t('--'),
       'AC' => t('Acre'),
@@ -328,6 +335,10 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
       'YT' => t('Yukon Territory'),
     );
     $format['locality_block']['administrative_area']['#title'] = t('Province');
+
+    if ($context['mode'] == 'render') {
+      $format['locality_block']['locality']['#suffix'] = ',';
+    }
   }
   else if ($address['country'] == 'AU') {
     $format['locality_block']['administrative_area']['#options'] = array(
@@ -345,6 +356,7 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
   else if ($address['country'] == 'NZ') {
     $format['locality_block']['locality']['#title'] = ('Town/City');
     $format['locality_block']['postal_code']['#title'] = t('Postcode');
+    $format['locality_block']['administrative_area']['#render_option_value'] = TRUE;
     $format['locality_block']['administrative_area']['#title'] = t('Region');
     $format['locality_block']['administrative_area']['#required'] = FALSE;
     $format['locality_block']['administrative_area']['#options'] = array(

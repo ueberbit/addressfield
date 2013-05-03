@@ -213,9 +213,11 @@ function _addressfield_render_address(&$format, $address) {
         }
       }
 
-      if (isset($child['#options'])) {
-        // Expand options if necessary.
-        $child['#children'] = isset($child['#options'][$address[$key]]) ? check_plain($child['#options'][$address[$key]]) : '';
+      // If the element instructs us to render the option value instead of the
+      // raw address element value and its #options array has a matching key,
+      // swap it out for the option value now.
+      if (!empty($child['#render_option_value']) && isset($child['#options'][$address[$key]])) {
+        $child['#children'] = check_plain($child['#options'][$address[$key]]);
       }
       else {
         $child['#children'] = check_plain($address[$key]);
@@ -561,7 +563,7 @@ function addressfield_field_formatter_settings_form($field, $instance, $view_mod
 
   $element['use_widget_handlers'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Use the same configuration as the widget'),
+    '#title' => t('Use the same configuration as the widget.'),
     '#default_value' => !empty($settings['use_widget_handlers']),
   );
 
