@@ -37,18 +37,40 @@ function addressfield_feeds_processor_targets_alter(&$targets, $entity_type, $bu
  * @param $value
  *   The value to populate the target with.
  */
-function addressfield_set_target($source, $entity, $target, $value) {
+function addressfield_set_target($source, $entity, $target, $values) {
   list($field_name, $sub_field) = explode(':', $target, 2);
 
-  // Handle non-multiple value fields.
-  if (!is_array($value)) {
-    $value = array($value);
+  // Convert the values into an array if it isn't one already to correspond to
+  // Drupal's handling of field value arrays.
+  if (!is_array($values)) {
+    $values = array($values);
   }
 
+  // If the field is already set on the given entity, update the existing value
+  // array. Otherwise start with a fresh field value array.
   $field = isset($entity->$field_name) ? $entity->$field_name : array();
 
-  foreach ($value as $i => $v) {
-    $field['und'][$i][$sub_field] = $v;
+  // Determine the language code to use for the import. First we have to find
+  // the entity type based on the processor specified in the importer config
+  // array, and then we make use of the API function added in Drupal 7.15.
+  $langcode = NULL;
+  $config = $source->importer->getConfig();
+
+  ctools_include('plugins');
+  if ($class = ctools_plugin_load_class('feeds', 'plugins', $config['processor']['plugin_key'], 'handler')) {
+    if (method_exists($class, 'entityType')) {
+      $entity_type = $class::entityType();
+      $langcode = entity_language($entity_type, $entity);
+    }
+  }
+
+  if (empty($langcode)) {
+    $langcode = LANGUAGE_NONE;
+  }
+
+  // Loop over the field values array...
+  foreach ($values as $delta => $value) {
+    $field[$langcode][$delta][$sub_field] = $value;
   }
 
   $entity->$field_name = $field;
