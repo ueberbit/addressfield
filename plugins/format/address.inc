@@ -54,6 +54,13 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
     '#required' => TRUE,
     '#attributes' => array('class' => array('postal-code')),
   );
+  $format['locality_block']['dependent_locality'] = array(
+    '#title' => t('Neighborhood'),
+    '#tag' => 'div',
+    '#attributes' => array('class' => array('dependent-locality')),
+    '#size' => 30,
+    '#render_option_value' => FALSE,
+  );
   $format['locality_block']['locality'] = array(
     '#title' => t('City'),
     '#size' => 30,
@@ -283,7 +290,7 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
     );
     $format['locality_block']['administrative_area']['#title'] = t('Province');
   }
-  else if ($address['country'] == 'BR') {
+  elseif ($address['country'] == 'BR') {
     $format['locality_block']['administrative_area']['#render_option_value'] = TRUE;
     $format['locality_block']['administrative_area']['#options'] = array(
       '' => t('--'),
@@ -315,6 +322,44 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
       'SP' => t('São Paulo'),
       'TO' => t('Tocantins'),
     );
+    // Change some titles to make translation easier.
+    $format['street_block']['#attributes'] = array(
+      'class' => array('addressfield-container-inline'),
+    );
+    $format['street_block']['thoroughfare'] = array(
+      '#title' => t('Thoroughfare'),
+      '#tag'   => NULL,
+      '#attributes' => array('class' => array('thoroughfare')),
+      '#size' => 30,
+      // The #required will be automatically set to FALSE when processing.
+      '#required' => TRUE,
+    );
+    $format['street_block']['premise'] = array(
+      '#title' => t('Complement'),
+      '#tag' => NULL,
+      '#attributes' => array('class' => array('premise')),
+      '#size' => 20,
+      '#prefix' => ', ',
+    );
+    $format['locality_block']['locality']['#suffix'] = ' - ';
+    // Hide suffixes and prefixes while in form.
+    if ($context['mode'] == 'form') {
+      $format['street_block']['premise']['#prefix'] = NULL;
+      $format['street_block']['premise']['#suffix'] = NULL;
+      $format['locality_block']['locality']['#suffix'] = NULL;
+    }
+    // Render an extra field for 'Neighborhood'.
+    $format['locality_block']['dependent_locality']['#render_option_value'] = TRUE;
+    // Change some weights to conform local standards
+    // Neighborhood.
+    $format['locality_block']['dependent_locality']['#weight'] = 0;
+    // City.
+    $format['locality_block']['locality']['#weight'] = 5;
+    // State.
+    $format['locality_block']['administrative_area']['#weight'] = 10;
+    // Postal Code.
+    $format['locality_block']['postal_code']['#weight'] = 16;
+    $format['locality_block']['postal_code']['#tag'] = 'div';
   }
   else if ($address['country'] == 'CA') {
     $format['locality_block']['administrative_area']['#options'] = array(
