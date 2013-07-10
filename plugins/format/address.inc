@@ -54,13 +54,6 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
     '#required' => TRUE,
     '#attributes' => array('class' => array('postal-code')),
   );
-  $format['locality_block']['dependent_locality'] = array(
-    '#title' => t('Neighborhood'),
-    '#tag' => 'div',
-    '#attributes' => array('class' => array('dependent-locality')),
-    '#size' => 30,
-    '#render_option_value' => FALSE,
-  );
   $format['locality_block']['locality'] = array(
     '#title' => t('City'),
     '#size' => 30,
@@ -291,6 +284,13 @@ function addressfield_format_address_generate(&$format, $address, $context = arr
     $format['locality_block']['administrative_area']['#title'] = t('Province');
   }
   elseif ($address['country'] == 'BR') {
+    $format['locality_block']['dependent_locality'] = array(
+      '#title' => t('Neighborhood'),
+      '#tag' => 'div',
+      '#attributes' => array('class' => array('dependent-locality')),
+      '#size' => 25,
+      '#render_option_value' => FALSE,
+    );
     $format['locality_block']['administrative_area']['#render_option_value'] = TRUE;
     $format['locality_block']['administrative_area']['#options'] = array(
       '' => t('--'),
