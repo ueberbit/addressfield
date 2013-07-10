@@ -200,8 +200,8 @@ function _addressfield_render_address(&$format, $address) {
   foreach (element_children($format) as $key) {
     $child = &$format[$key];
 
-    // Automatically expand elements that matches one of the field of the
-    // address structure.
+    // Automatically expand elements that match one of the fields of the address
+    // structure.
     if (in_array($key, array('name_line', 'first_name', 'last_name', 'organisation_name', 'country', 'administrative_area', 'sub_administrative_area', 'locality', 'dependent_locality', 'postal_code', 'thoroughfare', 'premise', 'sub_premise'), TRUE)) {
       if (isset($child['#render_type'])) {
         $child['#type'] = $child['#render_type'];
@@ -216,10 +216,12 @@ function _addressfield_render_address(&$format, $address) {
       // If the element instructs us to render the option value instead of the
       // raw address element value and its #options array has a matching key,
       // swap it out for the option value now.
+      $child['#children'] = '';
+
       if (!empty($child['#render_option_value']) && isset($child['#options'][$address[$key]])) {
         $child['#children'] = check_plain($child['#options'][$address[$key]]);
       }
-      else {
+      elseif (isset($address[$key])) {
         $child['#children'] = check_plain($address[$key]);
       }
 
