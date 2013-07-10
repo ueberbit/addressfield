@@ -180,7 +180,9 @@ function _addressfield_process_format_form(&$format, $address, $required) {
         unset($child['#required']);
       }
 
-      $child['#default_value'] = $address[$key];
+      if (isset($address[$key])) {
+        $child['#default_value'] = $address[$key];
+      }
     }
 
     // Recurse through the child.
