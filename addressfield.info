@@ -5,4 +5,5 @@ package = Fields
 
 dependencies[] = ctools
 
+files[] = addressfield.migrate.inc
 files[] = views/addressfield_views_handler_filter_country.inc
