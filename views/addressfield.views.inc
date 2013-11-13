@@ -7,7 +7,8 @@ function addressfield_field_views_data($field) {
   $data = field_views_field_default_views_data($field);
 
   // Add a filter handler for countries.
-  foreach ($field['storage']['details']['sql'] as $type => $tables) {
+  $key = key($field['storage']['details']);
+  foreach ($field['storage']['details'][$key] as $type => $tables) {
     foreach ($tables as $table_name => $columns) {
       if (!isset($columns['country'])) {
         continue;
