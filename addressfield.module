@@ -160,22 +160,28 @@ function _addressfield_process_format_form(&$format, $address, $required) {
   foreach (element_children($format) as $key) {
     $child = &$format[$key];
 
-    // Automatically expand elements that matches one of the field of the
-    // address structure.
+    // Automatically convert any element in the format array to an appropriate
+    // form element that matches one of the address component names.
     if (in_array($key, array('name_line', 'first_name', 'last_name', 'organisation_name', 'country', 'administrative_area', 'sub_administrative_area', 'locality', 'dependent_locality', 'postal_code', 'thoroughfare', 'premise', 'sub_premise'))) {
-      // Set the type.
+      // Set the form element type for the address component to whatever the
+      // address format specified in its #widget_type property.
       if (isset($child['#widget_type'])) {
         $child['#type'] = $child['#widget_type'];
       }
       else {
+        // If the element didn't specify a #widget_type and has options, turn it
+        // into a select list and unset its #size value, which is typically used
+        // to provide the width of a textfield.
         if (isset($child['#options'])) {
           $child['#type'] = 'select';
-          $child['#size'] = 0;
+          unset($child['#size']);
         }
         else {
+          // Otherwise go ahead and make it a textfield.
           $child['#type'] = 'textfield';
         }
       }
+
       if (!$required) {
         unset($child['#required']);
       }
@@ -185,7 +191,7 @@ function _addressfield_process_format_form(&$format, $address, $required) {
       }
     }
 
-    // Recurse through the child.
+    // Recurse through the element's children if it has any.
     _addressfield_process_format_form($child, $address, $required);
   }
 }
