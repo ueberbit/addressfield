@@ -1,0 +1,7 @@
+name: 'Address Field'
+type: module
+description: 'A field type used for storing postal addresses according the xNAL standard.'
+version: VERSION
+core: 8.x
+dependencies:
+  - field

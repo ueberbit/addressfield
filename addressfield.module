@@ -312,7 +312,7 @@ function addressfield_widget_process($element) {
 /**
  * Implements hook_field_info()
  */
-function addressfield_field_info() {
+/*function addressfield_field_info() {
   $fields = array();
 
   $fields['addressfield'] = array(
@@ -327,7 +327,8 @@ function addressfield_field_info() {
   );
 
   return $fields;
-}
+}*/
+
 
 /**
  * Returns an array of default values for the addressfield form elements.
@@ -760,9 +761,13 @@ function addressfield_data_property_info($name = NULL) {
  */
 function _addressfield_country_options_list($field = NULL, $instance = NULL) {
   // Necessary for country_get_list().
-  require_once DRUPAL_ROOT . '/includes/locale.inc';
 
-  $countries = country_get_list();
+  /**
+   * @var Drupal\Core\Locale\CountryManagerInterface $country_manager
+   */
+  $country_manager = Drupal::service('country_manager');
+
+  $countries = $country_manager->getList();
 
   if (isset($field)) {
     // If the instance is not specified, loop against all the instances of the field.
@@ -779,13 +784,8 @@ function _addressfield_country_options_list($field = NULL, $instance = NULL) {
     }
 
     foreach ($instances as $instance) {
-      if (!empty($instance['widget']['settings']['available_countries'])) {
-        $countries = array_intersect_key($countries, $instance['widget']['settings']['available_countries']);
-      }
-      else {
-        // This instance allow all the countries.
-        $countries = country_get_list();
-        break;
+      if (!empty($instance->settings['available_countries'])) {
+        $countries = array_intersect_key($countries, $instance->settings['available_countries']);
       }
     }
   }
