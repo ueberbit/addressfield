@@ -14,9 +14,14 @@ use Drupal\Core\Field\WidgetBase;
  *
  * @FieldWidget(
  *   id = "addressfield_simple",
- *   label = @Translation("Address Field"),
+ *   label = @Translation("Addressfield Simple Widget"),
  *   field_types = {
  *     "addressfield"
+ *   },
+ *   settings = {
+ *     "format_handlers" = {
+ *       "address"
+ *     }
  *   }
  * )
  */
