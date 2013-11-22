@@ -1,6 +1,11 @@
 <?php
-use Drupal\Component\Utility\NestedArray;
+use Drupal\addressfield\Plugin\AddressfieldFormat\Address;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\InvokeCommand;
+use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Template\Attribute;
+use Drupal\Component\Utility\NestedArray;
+use Drupal\Component\Utility\String;
 
 /**
  * @file
@@ -50,7 +55,7 @@ function addressfield_format_plugins_options() {
   $plugins = \Drupal::service("plugin.manager.addressfield")->getDefinitions();
   $options = array();
   foreach ($plugins as $widget => $info) {
-    $options[$widget] = check_plain($info['label']);
+    $options[$widget] = String::checkPlain($info['label']);
   }
   return $options;
 }
@@ -144,16 +149,16 @@ function addressfield_generate($address, array $handlers, array $context = array
 /**
  * Generate a full-fledged form from a format snippet, as returned by addressfield_formats().
  */
-/*function addressfield_process_format_form($format, &$form_state, $complete_form) {
+function addressfield_process_format_form($format, &$form_state, $complete_form) {
   // Make sure to load all the plugins that participated in this format.
-  ctools_include('plugins');
+/*  ctools_include('plugins');
   foreach ($format['#handlers'] as $handler) {
     ctools_plugin_load_function('addressfield', 'format', $handler, 'format callback');
-  }
+  }*/
 
   _addressfield_process_format_form($format, $format['#address'], $format['#required']);
   return $format;
-}*/
+}
 
 function _addressfield_process_format_form(&$format, $address, $required) {
   foreach (element_children($format) as $key) {
@@ -226,10 +231,10 @@ function _addressfield_render_address(&$format, $address) {
       $child['#children'] = '';
 
       if (!empty($child['#render_option_value']) && isset($child['#options'][$address[$key]])) {
-        $child['#children'] = check_plain($child['#options'][$address[$key]]);
+        $child['#children'] = String::checkPlain($child['#options'][$address[$key]]);
       }
       elseif (isset($address[$key])) {
-        $child['#children'] = check_plain($address[$key]);
+        $child['#children'] = String::checkPlain($address[$key]);
       }
 
       // Skip empty elements.
@@ -335,13 +340,13 @@ function addressfield_widget_process($element) {
 /**
  * Returns an array of default values for the addressfield form elements.
  */
-function addressfield_default_values($available_countries = NULL) {
+/*function addressfield_default_values($available_countries = NULL) {
   if (!isset($available_countries)) {
     $available_countries = _addressfield_country_options_list();
   }
 
   // Use the default country of the site if possible.
-  $default_country = variable_get('site_default_country', NULL);
+  $default_country = \Drupal::config('site_default_country', NULL);
 
   // If the default country is undefined or not in the list of available countries,
   // just fallback to the first country in the list.
@@ -365,7 +370,7 @@ function addressfield_default_values($available_countries = NULL) {
     'sub_premise' => '',
     'data' => '',
   );
-}
+}*/
 
 /**
  * Implements hook_field_is_empty().
@@ -504,7 +509,7 @@ function addressfield_field_widget_form(&$form, &$form_state, $field, $instance,
 function addressfield_standard_country_validate($element, &$form_state) {
   // If the country was changed, rebuild the form.
   if ($element['#default_value'] != $element['#value']) {
-    $form_state['rebuild'] = TRUE;
+    $form_state['rebuild'] = FALSE;
   }
 
   $parents = $element['#parents'];
@@ -537,19 +542,25 @@ function addressfield_standard_widget_refresh($form, $form_state) {
     }
   }
 
-  // Return the address block, but remove the '_weight' element inserted
-  // by the field API.
-  unset($element['_weight']);
+  // Return the address block, but remove the '_weight' element inserted by the field API.
+  unset($element['#weight']);
+
+  $response = new AjaxResponse();
 
   // Replace the address field widget with the updated widget and focus on the
   // new country select list.
-  $commands[] = ajax_command_replace(NULL, render($element));
-  $commands[] = ajax_command_invoke('#' . $element['country']['#id'], 'focus');
+  $response->addCommand(new ReplaceCommand(NULL, render($element)));
+  $response->addCommand(new InvokeCommand('#' . $element['country']['#id'], 'focus'));
+
+/*  $commands[] = ajax_command_replace(NULL, render($element));
+  $commands[] = ajax_command_invoke('#' . $element['country']['#id'], 'focus');*/
 
   // Allow other modules to add arbitrary AJAX commands on the refresh.
-  drupal_alter('addressfield_standard_widget_refresh', $commands, $form, $form_state);
+/*  drupal_alter('addressfield_standard_widget_refresh', $commands, $form, $form_state);
 
-  return array('#type' => 'ajax', '#commands' => $commands);
+  return array('#type' => 'ajax', '#commands' => $commands);*/
+
+  return $response;
 }
 
 /**
@@ -693,13 +704,13 @@ function addressfield_property_info_callback(&$info, $entity_type, $field, $inst
  *
  * @see addressfield_property_info_callback()
  */
-function addressfield_auto_creation() {
+/*function addressfield_auto_creation() {
   // We can't call addressfield_default_values() directly, because it has an
   // optional array argument that will receive an invalid value when Entity API
   // tries to call it directly with its usual $property_name and $context
   // arguments.
   return addressfield_default_values();
-}
+}*/
 
 /**
  * Defines info for the properties of the address field data structure.
@@ -768,7 +779,7 @@ function _addressfield_country_options_list($field = NULL, $instance = NULL) {
   /**
    * @var Drupal\Core\Locale\CountryManagerInterface $country_manager
    */
-  $country_manager = Drupal::service('country_manager');
+  $country_manager = \Drupal::service('country_manager');
 
   $countries = $country_manager->getList();
 
