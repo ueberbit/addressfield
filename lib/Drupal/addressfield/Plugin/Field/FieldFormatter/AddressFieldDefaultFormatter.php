@@ -108,6 +108,7 @@ class AddressFieldDefaultFormatter extends FormatterBase {
         'field' => $this->fieldDefinition->getField(),
         'instance' => $this->fieldDefinition,
         'delta' => $delta,
+        'langcode' => $items->getLangcode(),
       );
 
       $element[$delta] = addressfield_generate($address, $handlers, $context);
