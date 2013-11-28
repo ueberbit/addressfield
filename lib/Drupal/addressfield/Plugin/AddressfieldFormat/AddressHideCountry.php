@@ -1,10 +1,16 @@
 <?php
 
+/**
+ * @file
+ * Contains Drupal\addressfield\Plugin\AddressfieldFormat\AddressHideCountry.
+ */
+
 namespace Drupal\addressfield\Plugin\AddressfieldFormat;
+
 use Drupal\addressfield\Plugin\AddressfieldFormatInterface;
 
 /**
- * Hide the country when only one is available
+ * Hide the country when only one is available.
  *
  * @Plugin(
  *   id = "address_hide_country",
@@ -13,6 +19,9 @@ use Drupal\addressfield\Plugin\AddressfieldFormatInterface;
  */
 class AddressHideCountry implements AddressfieldFormatInterface {
 
+  /**
+   * {@inheritdoc}
+   */
   public function format(&$format, $address, $context = array()) {
     // When building the format for a form, we expect the country element to have
     // an #options list. If it does, and there is only one option, hide the field

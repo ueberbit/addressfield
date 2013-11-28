@@ -1,6 +1,12 @@
 <?php
 
+/**
+ * @file
+ * Contains Drupal\addressfield\Plugin\AddressfieldFormat\Address.
+ */
+
 namespace Drupal\addressfield\Plugin\AddressfieldFormat;
+
 use Drupal\addressfield\Plugin\AddressfieldFormatInterface;
 
 /**
@@ -12,6 +18,10 @@ use Drupal\addressfield\Plugin\AddressfieldFormatInterface;
  * )
  */
 class Address implements AddressfieldFormatInterface{
+
+  /**
+   * {@inheritdoc}
+   */
   public function format(&$format, $address, $context = array()) {
     // We start with a reasonable default: a simple block format suitable
     // for international shipping. We extend it with country-specific heuristics

@@ -1,6 +1,12 @@
 <?php
 
+/**
+ * @file
+ * Contains Drupal\addressfield\Plugin\AddressfieldFormat\Organisation.
+ */
+
 namespace Drupal\addressfield\Plugin\AddressfieldFormat;
+
 use Drupal\addressfield\Plugin\AddressfieldFormatInterface;
 
 /**
@@ -13,6 +19,9 @@ use Drupal\addressfield\Plugin\AddressfieldFormatInterface;
  */
 class Organisation implements AddressfieldFormatInterface {
 
+  /**
+   * {@inheritdoc}
+   */
   public function format(&$format, $address, $context = array()) {
     $format['organisation_block'] = array(
       '#type' => 'addressfield_container',
