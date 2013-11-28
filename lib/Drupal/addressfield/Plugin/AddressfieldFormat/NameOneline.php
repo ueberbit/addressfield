@@ -32,7 +32,11 @@ class NameOneline implements AddressfieldFormatInterface {
       '#type' => 'textfield',
       '#title' => t('Full name'),
       '#tag' => 'div',
-      '#attributes' => array('class' => array('name-block')),
+      '#attributes' => array(
+        'class' => array('name-block'),
+        'x-autocompletetype' => 'name',
+        'autocomplete' => 'name',
+      ),
       '#size' => 30,
       '#required' => TRUE,
     );

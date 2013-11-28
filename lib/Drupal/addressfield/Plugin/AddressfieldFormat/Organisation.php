@@ -32,7 +32,11 @@ class Organisation implements AddressfieldFormatInterface {
       '#type' => 'textfield',
       '#title' => t('Company'),
       '#size' => 30,
-      '#attributes' => array('class' => array('organisation-name')),
+      '#attributes' => array(
+        'class' => array('organisation-name'),
+        'x-autocompletetype' => 'organization',
+        'autocomplete' => 'organization',
+      ),
     );
   }
 

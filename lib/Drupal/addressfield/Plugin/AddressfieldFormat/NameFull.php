@@ -25,7 +25,9 @@ class NameFull implements AddressfieldFormatInterface {
   public function format(&$format, $address, $context = array()) {
     $format['name_block'] = array(
       '#type' => 'addressfield_container',
-      '#attributes' => array('class' => array('addressfield-container-inline', 'name-block')),
+      '#attributes' => array(
+        'class' => array('addressfield-container-inline', 'name-block'),
+      ),
       '#weight' => -100,
     );
     $format['name_block']['first_name'] = array(
@@ -33,7 +35,11 @@ class NameFull implements AddressfieldFormatInterface {
       '#title' => t('First name'),
       '#size' => 30,
       '#required' => TRUE,
-      '#attributes' => array('class' => array('first-name')),
+      '#attributes' => array(
+        'class' => array('first-name'),
+        'x-autocompletetype' => 'given-name',
+        'autocomplete' => 'given-name',
+      ),
     );
     $format['name_block']['last_name'] = array(
       '#type' => 'textfield',
@@ -41,7 +47,11 @@ class NameFull implements AddressfieldFormatInterface {
       '#size' => 30,
       '#required' => TRUE,
       '#prefix' => ' ',
-      '#attributes' => array('class' => array('last-name')),
+      '#attributes' => array(
+        'class' => array('last-name'),
+        'x-autocompletetype' => 'family-name',
+        'autocomplete' => 'family-name',
+      ),
     );
   }
 
