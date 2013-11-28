@@ -78,8 +78,6 @@ function addressfield_format_plugins_options() {
  * @return
  *   A renderable array suitable for use as part of a form (if 'mode' is 'form')
  *   or for formatted address output when passed to drupal_render().
- *
- * @deprecated: Remove or upgrade to Drupal 8.
  */
 function addressfield_generate($address, array $handlers, array $context = array()) {
   // If no mode is given in the context array, default it to 'render'.
@@ -87,13 +85,11 @@ function addressfield_generate($address, array $handlers, array $context = array
     $context['mode'] = 'render';
   }
 
-  ctools_include('plugins');
   $format = array();
   $format['#handlers'] = $handlers;
-  foreach ($format['#handlers'] as $handler) {
-    if ($callback = ctools_plugin_load_function('addressfield', 'format', $handler, 'format callback')) {
-      $callback($format, $address, $context);
-    }
+  foreach ($format['#handlers'] as $plugin_id) {
+    $plugin = \Drupal::service('plugin.manager.addressfield')->createInstance($plugin_id);
+    $plugin->format($format, $address, $context);
   }
 
   // Store the address in the format, for processing.

@@ -7,6 +7,7 @@
 
 namespace Drupal\addressfield\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
 
@@ -28,6 +29,18 @@ use Drupal\Core\Field\FormatterBase;
  * )
  */
 class AddressFieldDefaultFormatter extends FormatterBase {
+
+  /**
+   * The AddressfieldFormat plugin Manager.
+   *
+   * @var \Drupal\addressfield\AddressfieldPluginManager
+   */
+  protected $addressfieldFormatPluginManager;
+
+  public function __construct($plugin_id, array $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode) {
+    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode);
+    $this->addressfieldFormatPluginManager = \Drupal::service('plugin.manager.addressfield');
+  }
 
   /**
    * {@inheritdoc}
@@ -84,24 +97,20 @@ class AddressFieldDefaultFormatter extends FormatterBase {
   public function viewElements(FieldItemListInterface $items) {
     $element = array();
 
+    $handlers = $this->settings['format_handlers'];
+
     foreach ($items as $delta => $item) {
-      $element[$delta] = array(
-        '#markup' =>
-          $item->country . '<br />' .
-          $item->administrative_area . '<br />' .
-          $item->sub_administrative_area . '<br />' .
-          $item->locality . '<br />' .
-          $item->dependent_locality . '<br />' .
-          $item->postal_code . '<br />' .
-          $item->thoroughfare . '<br />' .
-          $item->premise . '<br />' .
-          $item->sub_premise . '<br />' .
-          $item->organisation_name . '<br />' .
-          $item->name_line . '<br />' .
-          $item->first_name . '<br />' .
-          $item->last_name . '<br />' .
-          $item->data,
+      $address = $item->getValue();
+
+      // Generate the address format.
+      $context = array(
+        'mode' => 'render',
+        'field' => $this->fieldDefinition->getField(),
+        'instance' => $this->fieldDefinition,
+        'delta' => $delta,
       );
+
+      $element[$delta] = addressfield_generate($address, $handlers, $context);
     }
 
     return $element;
