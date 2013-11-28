@@ -13,42 +13,6 @@ use Drupal\Component\Utility\String;
  */
 
 /**
- * Implements hook_ctools_plugin_directory().
- */
-/*function addressfield_ctools_plugin_directory($module, $plugin) {
-  if ($module == 'addressfield') {
-    return 'plugins/' . $plugin;
-  }
-}*/
-
-/**
- * Implements hook_ctools_plugin_type().
- */
-/*function addressfield_ctools_plugin_type() {
-  $plugins['format'] = array(
-    'load themes' => TRUE,
-  );
-  return $plugins;
-}*/
-
-/**
- * Implements hook_views_api().
- */
-function addressfield_views_api() {
-  return array(
-    'api' => 3,
-    'path' => drupal_get_path('module', 'addressfield') . '/views',
-  );
-}
-
-/**
- * Get the list of format plugins.
- */
-/*function addressfield_format_plugins() {
-  return \Drupal::service("plugin.manager.addressfield")->getDefinitions();
-}*/
-
-/**
  * Get the list of format plugins in a format suitable for #options.
  */
 function addressfield_format_plugins_options() {
@@ -114,6 +78,8 @@ function addressfield_format_plugins_options() {
  * @return
  *   A renderable array suitable for use as part of a form (if 'mode' is 'form')
  *   or for formatted address output when passed to drupal_render().
+ *
+ * @deprecated: Remove or upgrade to Drupal 8.
  */
 function addressfield_generate($address, array $handlers, array $context = array()) {
   // If no mode is given in the context array, default it to 'render'.
@@ -150,12 +116,6 @@ function addressfield_generate($address, array $handlers, array $context = array
  * Generate a full-fledged form from a format snippet, as returned by addressfield_formats().
  */
 function addressfield_process_format_form($format, &$form_state, $complete_form) {
-  // Make sure to load all the plugins that participated in this format.
-/*  ctools_include('plugins');
-  foreach ($format['#handlers'] as $handler) {
-    ctools_plugin_load_function('addressfield', 'format', $handler, 'format callback');
-  }*/
-
   _addressfield_process_format_form($format, $format['#address'], $format['#required']);
   return $format;
 }
