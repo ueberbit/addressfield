@@ -20,7 +20,7 @@ use Drupal\views\ResultRow;
  *
  * @PluginID("addressfield_country")
  */
-class AddressfieldCountry extends FieldPluginBase {
+class Country extends FieldPluginBase {
 
   /**
    * @var array Stores the available options.
