@@ -6,6 +6,31 @@
 function addressfield_field_views_data($field) {
   $data = field_views_field_default_views_data($field);
 
+  // Only expose these components as Views field handlers.
+  $implemented = array(
+    'country' => 'addressfield_country',
+    'administrative_area' => 'standard',
+    'locality' => 'standard',
+    'postal_code' => 'standard',
+    'thoroughfare' => 'standard',
+    'premise' => 'standard',
+    'organisation_name' => 'standard',
+    'name_line' => 'standard',
+    'first_name' => 'standard',
+    'last_name' => 'standard',
+  );
+
+
+  foreach ($data as $table_name => $table_data) {
+    foreach ($implemented as $property => $plugin_id) {
+      $data[$table_name][$field->getFieldName() . '_' . $property]['field'] = array(
+        'id' => $plugin_id,
+      );
+    }
+  }
+  /*
+  $data = field_views_field_default_views_data($field);
+
   // Add a filter handler for countries.
   $key = key($field['storage']['details']);
   foreach ($field['storage']['details'][$key] as $type => $tables) {
@@ -86,6 +111,6 @@ function addressfield_field_views_data($field) {
       }
     }
   }
-
+  */
   return $data;
 }
