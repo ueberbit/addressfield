@@ -149,7 +149,51 @@ class AddressFieldItem extends ConfigFieldItemBase {
       );
       static::$propertyDefinitions['administrative_area'] = array(
         'type' => 'string',
-        'label' => t('Administrative area'),
+        'label' => t('Administrative area (i.e. State / Province)'),
+      );
+      static::$propertyDefinitions['sub_administrative_area'] = array(
+        'type' => 'string',
+        'label' => t('Sub administrative area'),
+      );
+      static::$propertyDefinitions['locality'] = array(
+        'type' => 'string',
+        'label' => t('Locality (i.e. City)'),
+      );
+      static::$propertyDefinitions['dependent_locality'] = array(
+        'type' => 'string',
+        'label' => t('Dependent locality'),
+      );
+      static::$propertyDefinitions['postal_code'] = array(
+        'type' => 'string',
+        'label' => t('Postal code'),
+      );
+      static::$propertyDefinitions['thoroughfare'] = array(
+        'type' => 'string',
+        'label' =>  t('Thoroughfare (i.e. Street address)'),
+      );
+      static::$propertyDefinitions['premise'] = array(
+        'type' => 'string',
+        'label' => t('Administrative area (i.e. State / Province)'),
+      );
+      static::$propertyDefinitions['sub_premise'] = array(
+        'type' => 'string',
+        'label' => t('Premise (i.e. Apartment / Suite number)'),
+      );
+      static::$propertyDefinitions['organisation_name'] = array(
+        'type' => 'string',
+        'label' => t('Organisation name'),
+      );
+      static::$propertyDefinitions['name_line'] = array(
+        'type' => 'string',
+        'label' => t('Full name'),
+      );
+      static::$propertyDefinitions['first_name'] = array(
+        'type' => 'string',
+        'label' => t('First name'),
+      );
+      static::$propertyDefinitions['last_name'] = array(
+        'type' => 'string',
+        'label' => t('Last name'),
       );
     }
     return static::$propertyDefinitions;
