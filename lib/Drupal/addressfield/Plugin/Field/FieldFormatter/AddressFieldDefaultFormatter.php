@@ -6,6 +6,7 @@
  */
 
 namespace Drupal\addressfield\Plugin\Field\FieldFormatter;
+
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
 

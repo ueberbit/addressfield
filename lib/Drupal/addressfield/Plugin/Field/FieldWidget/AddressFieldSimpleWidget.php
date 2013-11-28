@@ -1,13 +1,14 @@
 <?php
+
 /**
  * @file
  * Contains \Drupal\addressfield\Plugin\Field\FieldWidget\AddressFieldSimpleWidget.
  */
 
 namespace Drupal\addressfield\Plugin\Field\FieldWidget;
+
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
-
 
 /**
  * Plugin implementation of the 'addressfield_simple' widget.

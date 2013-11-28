@@ -1,11 +1,15 @@
 <?php
+
 /**
  * @file
  * Contains \Drupal\addressfield\Plugin\Field\FieldType\AddressFieldItem.
  */
+
 namespace Drupal\addressfield\Plugin\Field\FieldType;
+
 use Drupal\Core\Field\ConfigFieldItemBase;
 use Drupal\Field\FieldInterface;
+
 /**
  * Plugin implementation of the 'addressfield' field type.
  *
