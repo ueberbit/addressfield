@@ -458,7 +458,7 @@ class Address implements AddressfieldFormatInterface{
         'WTC' => t('West Coast'),
         'GIS' => t('Gisborne District'),
         'MBH' => t('Marlborough District'),
-        'NSN' => t('Nelson City'),
+        'NSN' => t('Nelson'),
         'TAS' => t('Tasman District'),
         'CIT' => t('Chatham Islands Territory'),
       );
