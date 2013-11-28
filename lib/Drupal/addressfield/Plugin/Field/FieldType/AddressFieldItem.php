@@ -240,4 +240,17 @@ class AddressFieldItem extends ConfigFieldItemBase {
     $value = $this->get('country')->getValue();
     return $value === NULL || $value === '';
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function preSave() {
+    // Trim whitespace from all of the address components and convert any double
+    // spaces to single spaces.
+    foreach ($this->getPropertyValues() as $key => $value) {
+      if (!in_array($key, array('data')) && is_string($value)) {
+        $this->set($key, trim(str_replace('  ', ' ', $value)));
+      }
+    }
+  }
 }
