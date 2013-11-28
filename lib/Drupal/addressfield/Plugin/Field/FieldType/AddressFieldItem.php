@@ -17,7 +17,7 @@ use Drupal\Field\FieldInterface;
  *   id = "addressfield",
  *   label = @Translation("Postal address"),
  *   description = @Translation("A field type used for storing postal addresses according the xNAL standard."),
- *   default_widget = "addressfield_simple",
+ *   default_widget = "addressfield_standard",
  *   default_formatter = "addressfield_default",
  *   instance_settings = {
  *     "available_countries" = "",
