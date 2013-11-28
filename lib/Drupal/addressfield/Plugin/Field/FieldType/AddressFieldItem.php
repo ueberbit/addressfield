@@ -245,6 +245,22 @@ class AddressFieldItem extends ConfigFieldItemBase {
    * {@inheritdoc}
    */
   public function preSave() {
+    $item = $this->getPropertyValues();
+
+    // If the first name and last name are set but the name line isn't...
+    if (isset($item['first_name']) && isset($item['last_name']) && !isset($item['name_line'])) {
+      // Combine the first and last name to be the name line.
+      $this->set('name_line', $item['first_name'] . ' ' . $item['last_name']);
+    }
+    elseif (isset($item['name_line'])) {
+      // Otherwise if the name line is set, separate it out into a best guess at
+      // the first and last name.
+      $names = explode(' ', $item['name_line']);
+
+      $this->set('first_name', array_shift($names));
+      $this->set('last_name', implode(' ', $names));
+    }
+
     // Trim whitespace from all of the address components and convert any double
     // spaces to single spaces.
     foreach ($this->getPropertyValues() as $key => $value) {
