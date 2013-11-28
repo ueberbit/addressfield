@@ -47,7 +47,19 @@ class AddressFieldStandardWidget extends WidgetBase {
       '#value' => $element_key,
     );
 
-    $address = $items[$delta]->getValue();
+    // Get the default address used to build the widget form elements, looking
+    // first in the form state, then in the stored value for the field, and then
+    // in the default values of the instance.
+    $address = array();
+
+    if (!empty($form_state['addressfield'][$element_key])) {
+      // Use the value from the form_state if available.
+      $address = $form_state['addressfield'][$element_key];
+    }
+    else {
+      // Else use the saved value for the field or instance default.
+      $address = $items[$delta]->getValue();
+    }
 
     // Generate the address form.
     $context = array(
