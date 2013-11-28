@@ -605,6 +605,8 @@ function _addressfield_field_formatter_settings_form_validate($element, &$elemen
 
 /**
  * Implements hook_field_formatter_view().
+ *
+ * @deprecated
  */
 function addressfield_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $settings = $display['settings'];
@@ -639,6 +641,8 @@ function addressfield_field_formatter_view($entity_type, $entity, $field, $insta
  * Callback to alter the property info of address fields.
  *
  * @see addressfield_field_info().
+ *
+ * @deprecated
  */
 function addressfield_property_info_callback(&$info, $entity_type, $field, $instance, $field_type) {
   $name = $field['field_name'];
@@ -668,6 +672,8 @@ function addressfield_property_info_callback(&$info, $entity_type, $field, $inst
 
 /**
  * Defines info for the properties of the address field data structure.
+ *
+ * @deprecated
  */
 function addressfield_data_property_info($name = NULL) {
   // Build an array of basic property information for the address field.
@@ -726,6 +732,8 @@ function addressfield_data_property_info($name = NULL) {
 
 /**
  * Wraps country_get_list() for use as an Entity API options list.
+ *
+ * @todo: Move to helper class.
  */
 function _addressfield_country_options_list($field = NULL, $instance = NULL) {
   // Necessary for country_get_list().
