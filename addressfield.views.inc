@@ -23,12 +23,12 @@ function addressfield_field_views_data($field) {
 
   foreach ($data as $table_name => $table_data) {
     foreach ($implemented as $property => $plugin_id) {
-      $data[$table_name][$field->getFieldName() . '_' . $property]['field'] = array(
+      $data[$table_name][$field->getName() . '_' . $property]['field'] = array(
         'id' => $plugin_id,
       );
     }
 
-    $data[$table_name][$field->getFieldName() . '_country']['filter']['id'] = 'addressfield_country';
+    $data[$table_name][$field->getName() . '_country']['filter']['id'] = 'addressfield_country';
   }
 
   return $data;

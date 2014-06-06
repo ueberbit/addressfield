@@ -1,4 +1,4 @@
 services:
   plugin.manager.addressfield:
     class: Drupal\addressfield\AddressfieldPluginManager
-    arguments: ['@container.namespaces', '@cache.cache', '@language_manager', '@module_handler']
+    arguments: ['@container.namespaces', '@cache.discovery', '@language_manager', '@module_handler']

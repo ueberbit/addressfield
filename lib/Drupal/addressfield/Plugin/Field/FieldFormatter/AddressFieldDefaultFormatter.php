@@ -19,16 +19,19 @@ use Drupal\Core\Field\FormatterBase;
  *   label = @Translation("Address Field default"),
  *   field_types = {
  *     "addressfield"
- *   },
- *   settings = {
- *     "use_widget_handlers" = "1",
- *     "format_handlers" = {
- *       "address"
- *     }
  *   }
  * )
  */
 class AddressFieldDefaultFormatter extends FormatterBase {
+
+  public static function defaultSettings() {
+    $settings = parent::defaultSettings();
+    $settings['use_widget_handlers'] = 1;
+    $settings['format_handlers'] = array(
+      'address',
+    );
+    return $settings;
+  }
 
   /**
    * The AddressfieldFormat plugin Manager.

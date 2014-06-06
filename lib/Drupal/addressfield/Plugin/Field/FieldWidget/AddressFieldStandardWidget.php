@@ -18,15 +18,21 @@ use Drupal\Core\Field\WidgetBase;
  *   label = @Translation("Dynamic address form"),
  *   field_types = {
  *     "addressfield"
- *   },
- *   settings = {
- *     "format_handlers" = {
- *       "address"
- *     }
  *   }
  * )
  */
 class AddressFieldStandardWidget extends WidgetBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function defaultSettings() {
+    $settings = parent::defaultSettings();
+    $settings['format_handlers'] = array(
+      'address',
+    );
+    return $settings;
+  }
 
   /**
    * {@inheritdoc}
@@ -90,7 +96,7 @@ class AddressFieldStandardWidget extends WidgetBase {
 
     // If cardinality is 1, ensure a label is output for the field by wrapping it
     // in a details element.
-    if ($this->fieldDefinition->getFieldCardinality() == 1) {
+    if ($this->fieldDefinition->getCardinality() == 1) {
       $element += array(
         '#type' => 'fieldset',
       );

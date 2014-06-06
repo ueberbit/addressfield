@@ -7,8 +7,10 @@
 
 namespace Drupal\addressfield\Plugin\Field\FieldType;
 
-use Drupal\Core\Field\ConfigFieldItemBase;
-use Drupal\Field\FieldInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\FieldItemBase;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\Core\TypedData\DataDefinition;
 
 /**
  * Plugin implementation of the 'addressfield' field type.
@@ -18,13 +20,17 @@ use Drupal\Field\FieldInterface;
  *   label = @Translation("Postal address"),
  *   description = @Translation("A field type used for storing postal addresses according the xNAL standard."),
  *   default_widget = "addressfield_standard",
- *   default_formatter = "addressfield_default",
- *   instance_settings = {
- *     "available_countries" = "",
- *   }
+ *   default_formatter = "addressfield_default"
  * )
  */
-class AddressFieldItem extends ConfigFieldItemBase {
+class AddressFieldItem extends FieldItemBase {
+
+  public static function defaultInstanceSettings() {
+    $settings = parent::defaultInstanceSettings();
+    $settings['available_countries'] = array();
+    return $settings;
+  }
+
   /**
    * Definitions of the contained properties.
    *
@@ -34,7 +40,7 @@ class AddressFieldItem extends ConfigFieldItemBase {
   /**
    * {@inheritdoc}
    */
-  public static function schema(FieldInterface $field) {
+  public static function schema(FieldStorageDefinitionInterface $field_definition) {
     return array(
       'columns' => array(
         'country' => array(
@@ -145,62 +151,47 @@ class AddressFieldItem extends ConfigFieldItemBase {
   /**
    * {@inheritdoc}
    */
-  public function getPropertyDefinitions() {
-    if (!isset(static::$propertyDefinitions)) {
-      static::$propertyDefinitions['country'] = array(
-        'type' => 'string',
-        'label' => t('Country'),
-      );
-      static::$propertyDefinitions['administrative_area'] = array(
-        'type' => 'string',
-        'label' => t('Administrative area (i.e. State / Province)'),
-      );
-      static::$propertyDefinitions['sub_administrative_area'] = array(
-        'type' => 'string',
-        'label' => t('Sub administrative area'),
-      );
-      static::$propertyDefinitions['locality'] = array(
-        'type' => 'string',
-        'label' => t('Locality (i.e. City)'),
-      );
-      static::$propertyDefinitions['dependent_locality'] = array(
-        'type' => 'string',
-        'label' => t('Dependent locality'),
-      );
-      static::$propertyDefinitions['postal_code'] = array(
-        'type' => 'string',
-        'label' => t('Postal code'),
-      );
-      static::$propertyDefinitions['thoroughfare'] = array(
-        'type' => 'string',
-        'label' =>  t('Thoroughfare (i.e. Street address)'),
-      );
-      static::$propertyDefinitions['premise'] = array(
-        'type' => 'string',
-        'label' => t('Administrative area (i.e. State / Province)'),
-      );
-      static::$propertyDefinitions['sub_premise'] = array(
-        'type' => 'string',
-        'label' => t('Premise (i.e. Apartment / Suite number)'),
-      );
-      static::$propertyDefinitions['organisation_name'] = array(
-        'type' => 'string',
-        'label' => t('Organisation name'),
-      );
-      static::$propertyDefinitions['name_line'] = array(
-        'type' => 'string',
-        'label' => t('Full name'),
-      );
-      static::$propertyDefinitions['first_name'] = array(
-        'type' => 'string',
-        'label' => t('First name'),
-      );
-      static::$propertyDefinitions['last_name'] = array(
-        'type' => 'string',
-        'label' => t('Last name'),
-      );
-    }
-    return static::$propertyDefinitions;
+  public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
+    $properties['country'] = DataDefinition::create('string')
+      ->setLabel(t('Country'));
+
+    $properties['administrative_area'] = DataDefinition::create('string')
+      ->setLabel(t('Administrative area (i.e. State / Province)'));
+
+    $properties['sub_administrative_area'] = DataDefinition::create('string')
+      ->setLabel(t('Sub administrative area'));
+
+    $properties['locality'] = DataDefinition::create('string')
+      ->setLabel(t('Locality (i.e. City)'));
+
+    $properties['dependent_locality'] = DataDefinition::create('string')
+      ->setLabel(t('Dependent locality'));
+
+    $properties['postal_code'] = DataDefinition::create('string')
+      ->setLabel(t('Postal code'));
+
+    $properties['thoroughfare'] = DataDefinition::create('string')
+      ->setLabel(t('Thoroughfare (i.e. Street address)'));
+
+    $properties['premise'] = DataDefinition::create('string')
+      ->setLabel(t('Administrative area (i.e. State / Province)'));
+
+    $properties['sub_premise'] = DataDefinition::create('string')
+      ->setLabel(t('Premise (i.e. Apartment / Suite number)'));
+
+    $properties['organisation_name'] = DataDefinition::create('string')
+      ->setLabel(t('Organisation name'));
+
+    $properties['name_line'] = DataDefinition::create('string')
+      ->setLabel(t('Full name'));
+
+    $properties['first_name'] = DataDefinition::create('string')
+      ->setLabel(t('First name'));
+
+    $properties['last_name'] = DataDefinition::create('string')
+      ->setLabel(t('Last name'));
+
+    return $properties;
   }
 
   /**
@@ -210,13 +201,12 @@ class AddressFieldItem extends ConfigFieldItemBase {
     // Get base form from FileItem::instanceSettingsForm().
     $element = parent::instanceSettingsForm($form, $form_state);
 
-    $settings = $this->getFieldSettings();
+    $settings = $this->getSettings();
 
     /**
-     * @var Drupal\Core\Locale\CountryManagerInterface $country_manager
+     * @var \Drupal\Core\Locale\CountryManagerInterface $country_manager
      */
     $country_manager = \Drupal::service('country_manager');
-
     $countries = $country_manager->getList();
 
     $element['available_countries'] = array(
@@ -245,7 +235,7 @@ class AddressFieldItem extends ConfigFieldItemBase {
    * {@inheritdoc}
    */
   public function preSave() {
-    $item = $this->getPropertyValues();
+    $item = $this->toArray();
 
     // If the first name and last name are set but the name line isn't...
     if (isset($item['first_name']) && isset($item['last_name']) && !isset($item['name_line'])) {
@@ -263,7 +253,7 @@ class AddressFieldItem extends ConfigFieldItemBase {
 
     // Trim whitespace from all of the address components and convert any double
     // spaces to single spaces.
-    foreach ($this->getPropertyValues() as $key => $value) {
+    foreach ($this->toArray() as $key => $value) {
       if (!in_array($key, array('data')) && is_string($value)) {
         $this->set($key, trim(str_replace('  ', ' ', $value)));
       }
