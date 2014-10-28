@@ -9,6 +9,7 @@ namespace Drupal\addressfield\Plugin\Field\FieldWidget;
 
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Plugin implementation of the 'addressfield_standard' widget.
@@ -37,7 +38,7 @@ class AddressFieldStandardWidget extends WidgetBase {
   /**
    * {@inheritdoc}
    */
-  public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, array &$form_state) {
+  public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     // Determine the list of available countries, and if the currently selected
     // country is not in it, unset it so it can be reset to the default country.
     $pluginManager = \Drupal::service('plugin.manager.addressfield');
@@ -45,7 +46,13 @@ class AddressFieldStandardWidget extends WidgetBase {
     // Generate a specific key used to identify this element to restore a default
     // value upon AJAX submission regardless of where this element is in the
     // $form array.
-    $element_key = implode('|', array($element['#entity_type'], $element['#bundle'], $element['#field_name'], $element['#language'], $element['#delta']));
+    $element_key = implode('|', array(
+      $this->fieldDefinition->getTargetEntityTypeId(),
+      $this->fieldDefinition->getTargetBundle(),
+      $this->fieldDefinition->getName(),
+      // $element['#language'],
+      $delta
+    ));
 
     // Store the key in the element array as a value so it can be easily retrieved
     // in context in the $form_state['values'] array in the element validator.
@@ -59,9 +66,9 @@ class AddressFieldStandardWidget extends WidgetBase {
     // in the default values of the instance.
     $address = array();
 
-    if (!empty($form_state['addressfield'][$element_key])) {
+    if ($form_state->has(['addressfield', $element_key])) {
       // Use the value from the form_state if available.
-      $address = $form_state['addressfield'][$element_key];
+      $address = $form_state->get(['addressfield', $element_key]);
     }
     else {
       // Else use the saved value for the field or instance default.
@@ -71,9 +78,8 @@ class AddressFieldStandardWidget extends WidgetBase {
     // Generate the address form.
     $context = array(
       'mode' => 'form',
-      'field' => $this->fieldDefinition->getField(),
+      'field' => $this->fieldDefinition->getName(),
       'instance' => $this->fieldDefinition,
-//      'langcode' => $langcode,
       'delta' => $delta,
     );
 
@@ -96,7 +102,7 @@ class AddressFieldStandardWidget extends WidgetBase {
 
     // If cardinality is 1, ensure a label is output for the field by wrapping it
     // in a details element.
-    if ($this->fieldDefinition->getCardinality() == 1) {
+    if ($this->fieldDefinition->getFieldStorageDefinition()->getCardinality() == 1) {
       $element += array(
         '#type' => 'fieldset',
       );
@@ -105,7 +111,7 @@ class AddressFieldStandardWidget extends WidgetBase {
       return $element;
   }
 
-  public function settingsForm(array $form, array &$form_state) {
+  public function settingsForm(array $form, FormStateInterface $form_state) {
     $settings = $this->settings;
     $element = array();
 

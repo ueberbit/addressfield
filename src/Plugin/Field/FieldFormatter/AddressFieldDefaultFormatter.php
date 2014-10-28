@@ -10,6 +10,7 @@ namespace Drupal\addressfield\Plugin\Field\FieldFormatter;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Plugin implementation of the 'addressfield_default' formatter.
@@ -24,6 +25,18 @@ use Drupal\Core\Field\FormatterBase;
  */
 class AddressFieldDefaultFormatter extends FormatterBase {
 
+  /**
+   * The AddressfieldFormat plugin Manager.
+   *
+   * @var \Drupal\addressfield\AddressfieldPluginManager
+   */
+  protected $addressfieldFormatPluginManager;
+
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings) {
+    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
+    $this->addressfieldFormatPluginManager = \Drupal::service('plugin.manager.addressfield');
+  }
+
   public static function defaultSettings() {
     $settings = parent::defaultSettings();
     $settings['use_widget_handlers'] = 1;
@@ -34,35 +47,22 @@ class AddressFieldDefaultFormatter extends FormatterBase {
   }
 
   /**
-   * The AddressfieldFormat plugin Manager.
-   *
-   * @var \Drupal\addressfield\AddressfieldPluginManager
-   */
-  protected $addressfieldFormatPluginManager;
-
-  public function __construct($plugin_id, array $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode) {
-    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode);
-    $this->addressfieldFormatPluginManager = \Drupal::service('plugin.manager.addressfield');
-  }
-
-  /**
    * {@inheritdoc}
    */
-  public function settingsForm(array $form, array &$form_state) {
-    $settings = $this->settings;
+  public function settingsForm(array $form, FormStateInterface $form_state) {
     $element = array();
 
     $element['use_widget_handlers'] = array(
       '#type' => 'checkbox',
       '#title' => t('Use the same configuration as the widget.'),
-      '#default_value' => !empty($settings['use_widget_handlers']),
+      '#default_value' => !empty($this->getSettings('use_widget_handlers')),
     );
 
     $element['format_handlers'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Format handlers'),
       '#options' => addressfield_format_plugins_options(),
-      '#default_value' => $settings['format_handlers'],
+      '#default_value' => $this->getSettings(['format_handlers']),
       '#process' => array('form_process_checkboxes', '_addressfield_field_formatter_settings_form_process_add_state'),
       '#element_validate' => array('_addressfield_field_formatter_settings_form_validate')
     );

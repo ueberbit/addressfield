@@ -462,21 +462,21 @@ function addressfield_field_widget_form(&$form, &$form_state, $field, $instance,
  * Element validate callback: rebuilds the form on country change and stores the
  * current address value in the $form_state for retrieval on rebuild.
  */
-function addressfield_standard_country_validate($element, &$form_state) {
+function addressfield_standard_country_validate($element, \Drupal\Core\Form\FormStateInterface $form_state) {
   // If the country was changed, rebuild the form.
   if ($element['#default_value'] != $element['#value']) {
-    $form_state['rebuild'] = FALSE;
+    $form_state->setRebuild(FALSE);
   }
 
   $parents = $element['#parents'];
   array_pop($parents);
 
   // Search through the form values to find the current address.
-  $address = NestedArray::getValue($form_state['values'], $parents);
+  $address = $form_state->getValue($parents);
 
   // Store the present address values in the form state for retrieval by the
   // widget form regardless of where the widget sits in the $form array.
-  $form_state['addressfield'][$address['element_key']] = array_diff_key($address, array('element_key' => ''));
+  $form_state->set(['addressfield', $address['element_key']], array_diff_key($address, array('element_key' => '')));
 }
 
 /**
@@ -484,10 +484,9 @@ function addressfield_standard_country_validate($element, &$form_state) {
  *
  * The only thing we have to do is to find the proper element to render.
  */
-function addressfield_standard_widget_refresh($form, $form_state) {
+function addressfield_standard_widget_refresh($form, \Drupal\Core\Form\FormStateInterface $form_state) {
   // The target element is one element below the triggering country selector.
-  $array_parents = $form_state['triggering_element']['#array_parents'];
-  array_pop($array_parents);
+  $array_parents = $form_state->getTriggeringElement()['#array_parents'];
 
   // Iterate over the form parents to find the element.
   $element = $form;
@@ -509,7 +508,7 @@ function addressfield_standard_widget_refresh($form, $form_state) {
   $response->addCommand(new InvokeCommand('#' . $element['country']['#id'], 'focus'));
 
   // Allow other modules to add arbitrary AJAX commands on the refresh.
-  drupal_alter('addressfield_standard_widget_refresh', $commands, $form, $form_state);
+  \Drupal::moduleHandler()->alter('addressfield_standard_widget_refresh', $commands, $form, $form_state);
   return $response;
 }
 
