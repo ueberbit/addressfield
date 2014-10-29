@@ -51,11 +51,12 @@ class AddressFieldDefaultFormatter extends FormatterBase {
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $element = array();
+    $use_widget_handlers = $this->getSettings('use_widget_handlers');
 
     $element['use_widget_handlers'] = array(
       '#type' => 'checkbox',
       '#title' => t('Use the same configuration as the widget.'),
-      '#default_value' => !empty($this->getSettings('use_widget_handlers')),
+      '#default_value' => !empty($use_widget_handlers),
     );
 
     $element['format_handlers'] = array(
