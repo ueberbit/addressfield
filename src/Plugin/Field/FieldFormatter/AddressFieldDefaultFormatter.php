@@ -108,7 +108,7 @@ class AddressFieldDefaultFormatter extends FormatterBase {
       // Generate the address format.
       $context = array(
         'mode' => 'render',
-        'field' => $this->fieldDefinition->getField(),
+        'field' => $this->fieldDefinition->getName(),
         'instance' => $this->fieldDefinition,
         'delta' => $delta,
         'langcode' => $items->getLangcode(),
