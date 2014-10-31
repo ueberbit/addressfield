@@ -1,5 +1,6 @@
 <?php
 use Drupal\addressfield\Plugin\AddressfieldFormat\Address;
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
@@ -500,16 +501,8 @@ function addressfield_standard_widget_refresh($form, \Drupal\Core\Form\FormState
   // Return the address block, but remove the '_weight' element inserted by the field API.
   unset($element['#weight']);
 
-  $response = new AjaxResponse();
-
-  // Replace the address field widget with the updated widget and focus on the
-  // new country select list.
-  $response->addCommand(new ReplaceCommand(NULL, render($element)));
-  $response->addCommand(new InvokeCommand('#' . $element['country']['#id'], 'focus'));
-
-  // Allow other modules to add arbitrary AJAX commands on the refresh.
   \Drupal::moduleHandler()->alter('addressfield_standard_widget_refresh', $commands, $form, $form_state);
-  return $response;
+  return $element;
 }
 
 /**
