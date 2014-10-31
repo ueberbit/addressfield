@@ -39,36 +39,38 @@ class AddressFieldDefaultFormatter extends FormatterBase {
 
   public static function defaultSettings() {
     $settings = parent::defaultSettings();
-    $settings['use_widget_handlers'] = 1;
+    $settings['use_widget_handlers'] = TRUE;
     $settings['format_handlers'] = array(
       'address',
     );
     return $settings;
   }
 
+  protected function getEnabledHandlers() {
+    return array_filter($this->getSetting('format_handlers'));
+  }
+
   /**
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
-    $element = array();
-    $use_widget_handlers = $this->getSettings('use_widget_handlers');
+    $element = parent::settingsForm($form, $form_state);
 
     $element['use_widget_handlers'] = array(
       '#type' => 'checkbox',
       '#title' => t('Use the same configuration as the widget.'),
-      '#default_value' => !empty($use_widget_handlers),
+      '#default_value' => $this->getSetting('use_widget_handlers'),
     );
 
     $element['format_handlers'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Format handlers'),
       '#options' => addressfield_format_plugins_options(),
-      '#default_value' => $this->getSettings(['format_handlers']),
-      '#process' => array('form_process_checkboxes', '_addressfield_field_formatter_settings_form_process_add_state'),
-      '#element_validate' => array('_addressfield_field_formatter_settings_form_validate')
+      '#default_value' => $this->getEnabledHandlers(),
+      '#element_validate' => array(array(get_class($this), 'validateSettings')),
     );
 
-    return $element;
+     return $element;
   }
 
   /**
@@ -84,7 +86,7 @@ class AddressFieldDefaultFormatter extends FormatterBase {
     }
     else {
       $plugins = \Drupal::service("plugin.manager.addressfield")->getDefinitions();
-      foreach ($settings['format_handlers'] as $handler) {
+      foreach ($this->getEnabledHandlers() as $handler) {
         $summary[] = $plugins[$handler]['label'];
       }
       if (empty($summary)) {
@@ -101,8 +103,6 @@ class AddressFieldDefaultFormatter extends FormatterBase {
   public function viewElements(FieldItemListInterface $items) {
     $element = array();
 
-    $handlers = $this->settings['format_handlers'];
-
     foreach ($items as $delta => $item) {
       $address = $item->getValue();
 
@@ -115,9 +115,20 @@ class AddressFieldDefaultFormatter extends FormatterBase {
         'langcode' => $items->getLangcode(),
       );
 
-      $element[$delta] = addressfield_generate($address, $handlers, $context);
+      $element[$delta] = addressfield_generate($address, $this->getEnabledHandlers(), $context);
     }
 
     return $element;
   }
+
+  public static function validateSettings($element, FormStateInterface $form_state, $form) {
+    $settings = $form_state->getValue(array_slice($element['#parents'], 0, -1));
+
+    if ($settings['use_widget_handlers'] == TRUE) {
+      $settings['format_handlers'] = array();
+    }
+
+    $form_state->setValueForElement($element, array_filter($settings['format_handlers']));
+  }
+
 }

@@ -58,8 +58,8 @@ class AddressFieldStandardWidget extends WidgetBase {
     $summary = array();
 
     $plugins = \Drupal::service("plugin.manager.addressfield")->getDefinitions();
-    foreach ($this->getSetting('format_handlers') as $handler) {
-      $summary[] = $plugins[$handler]['label'];
+    foreach (array_filter($this->getSetting('format_handlers')) as $handler) {
+      $summary[] = (string) $plugins[$handler]['label'];
     }
     if (empty($summary)) {
       $summary[] = t('No handler');
@@ -116,7 +116,7 @@ class AddressFieldStandardWidget extends WidgetBase {
       'delta' => $delta,
     );
 
-    foreach ($this->getSetting('format_handlers') as $handler) {
+    foreach (array_filter($this->getSetting('format_handlers')) as $handler) {
       $handler = $pluginManager->createInstance($handler);
       $handler->format($element, $address, $context);
     }
