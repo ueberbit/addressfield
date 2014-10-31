@@ -38,6 +38,39 @@ class AddressFieldStandardWidget extends WidgetBase {
   /**
    * {@inheritdoc}
    */
+  public function settingsForm(array $form, FormStateInterface $form_state) {
+    $element = parent::settingsForm($form, $form_state);
+
+    $element['format_handlers'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Format handlers'),
+      '#options' => addressfield_format_plugins_options(),
+      '#default_value' => $this->getSetting('format_handlers'),
+    );
+
+    return $element;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsSummary() {
+    $summary = array();
+
+    $plugins = \Drupal::service("plugin.manager.addressfield")->getDefinitions();
+    foreach ($this->getSetting('format_handlers') as $handler) {
+      $summary[] = $plugins[$handler]['label'];
+    }
+    if (empty($summary)) {
+      $summary[] = t('No handler');
+    };
+
+    return $summary;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     // Determine the list of available countries, and if the currently selected
     // country is not in it, unset it so it can be reset to the default country.
@@ -109,41 +142,6 @@ class AddressFieldStandardWidget extends WidgetBase {
     }
 
       return $element;
-  }
-
-  public function settingsForm(array $form, FormStateInterface $form_state) {
-    $settings = $this->settings;
-    $element = array();
-
-    $element['format_handlers'] = array(
-      '#type' => 'checkboxes',
-      '#title' => t('Format handlers'),
-      '#options' => addressfield_format_plugins_options(),
-      '#default_value' => $settings['format_handlers'],
-      '#process' => array('form_process_checkboxes', '_addressfield_field_formatter_settings_form_process_add_state'),
-      '#element_validate' => array('_addressfield_field_formatter_settings_form_validate')
-    );
-
-    return $element;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function settingsSummary() {
-    $settings = $this->getSettings();
-
-    $summary = array();
-
-    $plugins = \Drupal::service("plugin.manager.addressfield")->getDefinitions();
-    foreach ($settings['format_handlers'] as $handler) {
-      $summary[] = $plugins[$handler]['label'];
-    }
-    if (empty($summary)) {
-      $summary[] = t('No handler');
-    };
-
-    return $summary;
   }
 
 }
