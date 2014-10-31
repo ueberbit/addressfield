@@ -10,6 +10,7 @@ namespace Drupal\addressfield\Plugin\Field\FieldType;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\TypedData\DataDefinition;
 
 /**
@@ -25,8 +26,8 @@ use Drupal\Core\TypedData\DataDefinition;
  */
 class AddressFieldItem extends FieldItemBase {
 
-  public static function defaultInstanceSettings() {
-    $settings = parent::defaultInstanceSettings();
+  public static function defaultFieldSettings() {
+    $settings = parent::defaultFieldSettings();
     $settings['available_countries'] = array();
     return $settings;
   }
@@ -197,11 +198,9 @@ class AddressFieldItem extends FieldItemBase {
   /**
    * {@inheritdoc}
    */
-  public function instanceSettingsForm(array $form, array &$form_state) {
+  public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
     // Get base form from FileItem::instanceSettingsForm().
-    $element = parent::instanceSettingsForm($form, $form_state);
-
-    $settings = $this->getSettings();
+    $element = parent::fieldSettingsForm($form, $form_state);
 
     /**
      * @var \Drupal\Core\Locale\CountryManagerInterface $country_manager
@@ -215,7 +214,7 @@ class AddressFieldItem extends FieldItemBase {
       '#title' => t('Available countries'),
       '#description' => t('If no countries are selected, all countries will be available.'),
       '#options' => $countries,
-      '#default_value' => $settings['available_countries'],
+      '#default_value' => $this->getSetting('available_countries'),
     );
 
     return $element;
