@@ -1,0 +1,8 @@
+{
+    "name": "drupal/addressfield",
+    "description": "A field type used for storing postal addresses according the xNAL standard.",
+    "type": "drupal-module",
+    "license": "GPL-2.0+",
+    "minimum-stability": "dev",
+    "require": { }
+}
