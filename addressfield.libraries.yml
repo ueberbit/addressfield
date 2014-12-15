@@ -1,0 +1,5 @@
+addressfield:
+  version: VERSION
+  css:
+    theme:
+      addressfield.css: {}

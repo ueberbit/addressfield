@@ -66,7 +66,7 @@ class Address implements AddressfieldFormatInterface{
       ),
       '#weight' => 50,
     );
-    $format['locality_block']['#attached']['css'][] = drupal_get_path('module', 'addressfield') . '/addressfield.css';
+    $format['locality_block']['#attached']['library'][] = 'addressfield/addressfield';
     $format['locality_block']['postal_code'] = array(
       '#type' => 'textfield',
       '#title' => t('Postal code'),
