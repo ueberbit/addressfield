@@ -4,7 +4,7 @@
  * Implements hook_field_views_data().
  */
 function addressfield_field_views_data($field) {
-  $data = field_views_field_default_views_data($field);
+  $data = views_field_default_views_data($field);
 
   // Only expose these components as Views field handlers.
   $implemented = array(
