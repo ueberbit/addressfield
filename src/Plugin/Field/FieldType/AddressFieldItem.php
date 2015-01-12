@@ -12,6 +12,7 @@ use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\TypedData\DataDefinition;
+use Drupal\Core\TypedData\MapDataDefinition;
 
 /**
  * Plugin implementation of the 'addressfield' field type.
@@ -191,6 +192,9 @@ class AddressFieldItem extends FieldItemBase {
 
     $properties['last_name'] = DataDefinition::create('string')
       ->setLabel(t('Last name'));
+
+    $properties['data'] = MapDataDefinition::create()
+      ->setLabel(t('Additional data for this address'));
 
     return $properties;
   }
