@@ -15,19 +15,19 @@ use Drupal\views\Plugin\views\filter\InOperator;
 use Drupal\views\ResultRow;
 
 /**
- * foo.
+ * Filters addressfield items by country.
  *
  * @ingroup views_field_handlers
  *
- * @PluginID("addressfield_country")
+ * @ViewsFilter("addressfield_country")
  */
 class Country extends InOperator {
 
   public function getValueOptions() {
     if (!isset($this->value_options)) {
-      $this->value_options = _addressfield_country_options_list();
+      $this->valueOptions = _addressfield_country_options_list();
     }
-    return $this->value_options;
+    return $this->valueOptions;
   }
 
 }
