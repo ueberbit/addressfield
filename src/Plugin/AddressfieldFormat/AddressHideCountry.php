@@ -36,9 +36,9 @@ class AddressHideCountry implements AddressfieldFormatInterface {
       // we look instead in the field instance settings if given. If we find a
       // single country option and it matches the country of the current address,
       // go ahead and hide it.
-      if (!empty($context['instance']['widget']['settings']['available_countries']) &&
-        count($context['instance']['widget']['settings']['available_countries']) == 1) {
-        if (isset($context['instance']['widget']['settings']['available_countries'][$address['country']])) {
+      $available_countries = $context['instance']->getSetting('available_countries');
+      if (count($available_countries) == 1) {
+        if (isset($available_countries[$address['country']])) {
           $format['country']['#access'] = FALSE;
         }
       }
