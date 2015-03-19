@@ -141,7 +141,7 @@ class AddressFieldStandardWidget extends WidgetBase {
       );
     }
 
-      return $element;
+    return $element;
   }
 
 }

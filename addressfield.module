@@ -230,7 +230,7 @@ function addressfield_theme() {
 /**
  * Render a container for a set of address fields.
  */
-function theme_addressfield_container($variables) {
+function template_preprocess_addressfield_container(&$variables) {
   $element = $variables['element'];
 
   $element['#children'] = trim($element['#children']);
@@ -241,10 +241,9 @@ function theme_addressfield_container($variables) {
     $output = '<' . $element['#tag'] . $attributes . '>';
     $output .= $element['#children'];
     $output .= '</' . $element['#tag'] . ">";
-    return $output;
-  }
-  else {
-    return '';
+    $variables['content'] = array(
+      '#markup' => $output,
+    );
   }
 }
 

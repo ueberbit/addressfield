@@ -17,7 +17,7 @@ use Drupal\addressfield\Plugin\AddressfieldFormatInterface;
  *   label = @Translation("Address form (country-specific)")
  * )
  */
-class Address implements AddressfieldFormatInterface{
+class Address implements AddressfieldFormatInterface {
 
   /**
    * {@inheritdoc}
@@ -525,7 +525,7 @@ class Address implements AddressfieldFormatInterface{
     if ($context['mode'] == 'form') {
       // Provide a wrapper ID for AJAX replacement based on country selection.
       if (!isset($format['#wrapper_id'])) {
-        $format['#wrapper_id'] = drupal_html_id('addressfield-wrapper');
+        $format['#wrapper_id'] = \Drupal\Component\Utility\Html::getUniqueId('addressfield-wrapper');
         $format['#prefix'] = '<div id="' . $format['#wrapper_id'] . '">';
         $format['#suffix'] = '</div>';
       }
