@@ -8,6 +8,7 @@
 namespace Drupal\addressfield\Plugin\AddressfieldFormat;
 
 use Drupal\addressfield\Plugin\AddressfieldFormatInterface;
+use Drupal\Core\Render\Element;
 
 /**
  * Address form (country-specific)
@@ -110,7 +111,7 @@ class Address implements AddressfieldFormatInterface {
       unset($format['locality_block']['postal_code']);
 
       // Remove the prefix from the first widget of the block.
-      $element_children = element_children($format['locality_block']);
+      $element_children = Element::children($format['locality_block']);
       $first_child = reset($element_children);
       unset($format['locality_block'][$first_child]['#prefix']);
     }
@@ -476,7 +477,7 @@ class Address implements AddressfieldFormatInterface {
       $format['locality_block']['postal_code'] = $postal_code_widget;
 
       // Remove the prefix from the first widget of the block.
-      $element_children = element_children($format['locality_block']);
+      $element_children = Element::children($format['locality_block']);
       $first_child = reset($element_children);
       unset($format['locality_block'][$first_child]['#prefix']);
     }

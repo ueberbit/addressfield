@@ -4,6 +4,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
+use Drupal\Core\Render\Element;
 use Drupal\Core\Template\Attribute;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Utility\String;
@@ -118,7 +119,7 @@ function addressfield_process_format_form($format, &$form_state, $complete_form)
 }
 
 function _addressfield_process_format_form(&$format, $address, $required) {
-  foreach (element_children($format) as $key) {
+  foreach (Element::children($format) as $key) {
     $child = &$format[$key];
 
     // Automatically convert any element in the format array to an appropriate
@@ -166,7 +167,7 @@ function addressfield_render_address($format) {
 }
 
 function _addressfield_render_address(&$format, $address) {
-  foreach (element_children($format) as $key) {
+  foreach (Element::children($format) as $key) {
     $child = &$format[$key];
 
     // Automatically expand elements that match one of the fields of the address
@@ -264,7 +265,7 @@ function addressfield_element_info() {
  * Form API process function: set the #parents of the children of this element so they appear at the same level as the parent.
  */
 function addressfield_widget_process($element) {
-  foreach (element_children($element) as $key) {
+  foreach (Element::children($element) as $key) {
     $element[$key]['#parents'] = $element['#parents'];
     $element[$key]['#parents'][count($element[$key]['#parents']) - 1] = $key;
   }
