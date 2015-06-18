@@ -189,10 +189,10 @@ function _addressfield_render_address(&$format, $address) {
       $child['#children'] = '';
 
       if (!empty($child['#render_option_value']) && isset($child['#options'][$address[$key]])) {
-        $child['#children'] = String::checkPlain($child['#options'][$address[$key]]);
+        $child['#children'] = \Drupal\Component\Utility\SafeMarkup::checkPlain($child['#options'][$address[$key]]);
       }
       elseif (isset($address[$key])) {
-        $child['#children'] = String::checkPlain($address[$key]);
+        $child['#children'] = \Drupal\Component\Utility\SafeMarkup::checkPlain($address[$key]);
       }
 
       // Skip empty elements.
@@ -242,9 +242,7 @@ function template_preprocess_addressfield_container(&$variables) {
     $output = '<' . $element['#tag'] . $attributes . '>';
     $output .= $element['#children'];
     $output .= '</' . $element['#tag'] . ">";
-    $variables['content'] = array(
-      '#markup' => $output,
-    );
+    $variables['content'] = $output;
   }
 }
 
