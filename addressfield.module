@@ -21,7 +21,7 @@ function addressfield_format_plugins_options() {
   $plugins = \Drupal::service("plugin.manager.addressfield")->getDefinitions();
   $options = array();
   foreach ($plugins as $widget => $info) {
-    $options[$widget] = String::checkPlain($info['label']);
+    $options[$widget] = SafeMarkup::checkPlain($info['label']);
   }
   return $options;
 }
