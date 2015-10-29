@@ -1,5 +1,6 @@
 <?php
 use Drupal\addressfield\Plugin\AddressfieldFormat\Address;
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\InvokeCommand;
@@ -243,34 +244,9 @@ function template_preprocess_addressfield_container(&$variables) {
     $output .= $element['#children'];
     $output .= '</' . $element['#tag'] . ">";
     $variables['content'] = array(
-      '#markup' => SafeMarkup::set($output),
+      '#markup' => new FormattableMarkup($output, []),
     );
   }
-}
-
-/**
- * Implementation of hook_element_info().
- */
-function addressfield_element_info() {
-  $types['addressfield_container'] = array(
-    '#theme_wrappers' => array('addressfield_container'),
-    '#process' => array('addressfield_widget_process'),
-    '#attributes' => array(),
-    '#tag' => 'div',
-  );
-  return $types;
-}
-
-/**
- * Form API process function: set the #parents of the children of this element so they appear at the same level as the parent.
- */
-function addressfield_widget_process($element) {
-  foreach (Element::children($element) as $key) {
-    $element[$key]['#parents'] = $element['#parents'];
-    $element[$key]['#parents'][count($element[$key]['#parents']) - 1] = $key;
-  }
-
-  return $element;
 }
 
 /**
