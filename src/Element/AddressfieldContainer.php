@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\addressfield\Element\AddressfieldContainerElement.
+ * Contains \Drupal\addressfield\Element\AddressfieldContainer.
  */
 
 namespace Drupal\addressfield\Element;
@@ -15,12 +15,12 @@ use Drupal\Core\Render\Element\RenderElement;
  *
  * @RenderElement("addressfield_container")
  */
-class AddressfieldContainerElement extends RenderElement {
+class AddressfieldContainer extends RenderElement {
 
   public function getInfo() {
     $class = get_class($this);
     return array(
-      '#process' => array(array($class, 'widget_process')),
+      '#process' => array(array($class, 'processAddressfieldContainer')),
       '#theme_wrappers' => array('addressfield_container'),
       '#attributes' => array(),
       '#tag' => 'div',
@@ -41,7 +41,7 @@ class AddressfieldContainerElement extends RenderElement {
    * @return array
    *   The processed element.
    */
-  public static function widget_process(&$element, FormStateInterface $form_state, &$complete_form) {
+  public static function processAddressfieldContainer(&$element, FormStateInterface $form_state, &$complete_form) {
     foreach (Element::children($element) as $key) {
       $element[$key]['#parents'] = $element['#parents'];
       $element[$key]['#parents'][count($element[$key]['#parents']) - 1] = $key;
